@@ -1,4 +1,4 @@
-package pl.uniq.models;
+package pl.uniq.board.models;
 
 import java.util.List;
 

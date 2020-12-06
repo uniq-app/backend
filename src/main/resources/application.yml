@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: uniq-backend
+  datasource:
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+server:
+  port: 8080
+
