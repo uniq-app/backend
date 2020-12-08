@@ -1,6 +1,7 @@
 package pl.uniq.board.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.uniq.board.models.Board;
@@ -38,17 +39,15 @@ public class BoardController {
         return boardService.findById(uuid);
     }
 
+    @PostMapping(value = "/")
+    public ResponseEntity<Board> saveBoard(@RequestBody Board board) {
+        return new ResponseEntity<>(this.boardService.save(board), HttpStatus.OK);
+    }
 
     @PutMapping(value = "/{uuid}")
-    public ResponseEntity<Board> updateBoard(@PathVariable(value = "uuid") UUID uuid,
-                                             @RequestBody Board board) {
-        Board storedBoard = boardService.findById(uuid);
-        if (board.getName() != null) storedBoard.setName(board.getName());
-        if (board.getCreatorId() != null) storedBoard.setCreatorId(board.getCreatorId());
-        if (board.getPhotos() != null) storedBoard.setPhotos(board.getPhotos());
-        if (board.getIsPrivate() != null) storedBoard.setIsPrivate(board.getIsPrivate());
-        if (board.getIsCreatorHidden() != null) storedBoard.setIsCreatorHidden(board.getIsCreatorHidden());
-        return ResponseEntity.ok(this.boardService.save(storedBoard));
+    public ResponseEntity<Board> updateBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody Board board) {
+	    Board storedBoard = boardService.updateBoard(uuid, board);
+        return new ResponseEntity<>(storedBoard, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{uuid}")

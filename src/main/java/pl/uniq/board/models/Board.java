@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.uniq.photo.models.Photo;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -29,9 +30,9 @@ public class Board {
     @Column(name = "creator_id")
     private String creatorId;
 
-    @ElementCollection
-    @Column(name = "photos")
-    private List<String> photos;
+	@Column(name = "photos")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photos;
 
     @Column(name = "is_private")
     private Boolean isPrivate = false;
