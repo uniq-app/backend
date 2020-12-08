@@ -2,12 +2,15 @@ package pl.uniq.photo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.uniq.board.models.Board;
+import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.repository.PhotoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PhotoService {
@@ -17,26 +20,24 @@ public class PhotoService {
 	@Autowired
 	public PhotoService(PhotoRepository photoRepository) { this.photoRepository = photoRepository; }
 
-	public List<Photo> save(List<Photo> photos) {
-		if (!photos.isEmpty()) {
-			for (Photo photo : photos) {
-				photoRepository.save(photo);
-			}
+
+	public List<Photo> findAllByBoard(UUID uuid) throws ResourceNotFoundException {
+		return photoRepository.findAllByBoard(uuid);
+	}
+
+
+	public List<Photo> save(List<Photo> photos, UUID board_id) {
+		for (Photo photo : photos) {
+			photo.setBoard(board_id);
+			photoRepository.save(photo);
 		}
 		return photos;
 	}
 
-	public List<Photo> update(List<Photo> photos) {
-//		List<Photo> result = new ArrayList<>();
-		if (!photos.isEmpty()) {
-			for (Photo photo : photos) {
-				Optional<Photo> storedPhoto = photoRepository.findById(photo.getId());
-				if (storedPhoto.isPresent()) {
-					photoRepository.delete(storedPhoto.get());
-					photoRepository.save(photo);
-				}
-			}
+	public void delete(List<Photo> photos, UUID uuid) {
+		for (Photo photo : photos) {
+			Optional<Photo> temp_photo = Optional.ofNullable(photoRepository.findByValueAndBoard(photo.getValue(), uuid));
+			temp_photo.ifPresent(photoRepository::delete);
 		}
-		return photos;
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import pl.uniq.photo.models.Photo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,10 +30,6 @@ public class Board {
 
     @Column(name = "creator_id")
     private String creatorId;
-
-	@Column(name = "photos")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos;
 
     @Column(name = "is_private")
     private Boolean isPrivate = false;

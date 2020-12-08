@@ -29,8 +29,17 @@ public class BoardService {
 	}
 
 	public BoardResults test() {
-		List<Photo> photos = Collections.singletonList(new Photo(UUID.randomUUID() ,"5fcfda0597b2c278a90084be"));
-		List<Board> boards = Arrays.asList(Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).photos(photos).timestamp(Timestamp.from(Instant.now())).build(), Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).photos(photos).timestamp(Timestamp.from(Instant.now())).build(), Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).photos(photos).timestamp(Timestamp.from(Instant.now())).build());
+//		UUID board_test = UUID.fromString("fe2b40df-e4e7-4930-b62d-2084d515f5fe");
+//		Board test = Board.builder().id(board_test).name("test").creatorId("1").isPrivate(false).isCreatorHidden(false).timestamp(Timestamp.from(Instant.now())).build();
+//		boardRepository.save(test);
+//		Photo photo_test = Photo.builder().id(UUID.randomUUID()).value("test_photo").board(test).build();
+//		photoService.save(List.of(photo_test));
+
+		List<Board> boards = Arrays.asList(
+				Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).timestamp(Timestamp.from(Instant.now())).build(),
+				Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).timestamp(Timestamp.from(Instant.now())).build(),
+				Board.builder().id(UUID.randomUUID()).name("1").creatorId("1").isPrivate(false).isCreatorHidden(false).timestamp(Timestamp.from(Instant.now())).build()
+		);
 		return new BoardResults(boards);
 	}
 
@@ -47,21 +56,20 @@ public class BoardService {
 	}
 
 	public Board save(Board board) {
-		photoService.save(board.getPhotos());
-		return boardRepository.save(board);
-	}
-
-	public void delete(Board board) {
-		boardRepository.delete(board);
+		boardRepository.save(board);
+		return board;
 	}
 
 	public Board updateBoard(UUID uuid, Board board) {
 		Board storedBoard = findById(uuid);
 		if (board.getName() != null) storedBoard.setName(board.getName());
 		if (board.getCreatorId() != null) storedBoard.setCreatorId(board.getCreatorId());
-		if (board.getPhotos() != null) storedBoard.setPhotos(photoService.save(board.getPhotos()));
 		if (board.getIsPrivate() != null) storedBoard.setIsPrivate(board.getIsPrivate());
 		if (board.getIsCreatorHidden() != null) storedBoard.setIsCreatorHidden(board.getIsCreatorHidden());
 		return storedBoard;
+	}
+
+	public void delete(Board board) {
+		boardRepository.delete(board);
 	}
 }
