@@ -8,7 +8,4 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface BoardRepository extends JpaRepository<Board, UUID> {
-    List<Board> findAll();
-    List<Board> findAllByCreatorId(String id);
-}
+public interface BoardRepository extends JpaRepository<Board, UUID> {}

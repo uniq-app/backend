@@ -11,5 +11,6 @@ import java.util.UUID;
 public interface PhotoRepository extends JpaRepository<Photo, UUID> {
 
 	List<Photo> findAllByBoard(UUID uuid);
+
 	Photo findByValueAndBoard(String value, UUID uuid);
 }

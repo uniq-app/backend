@@ -2,12 +2,10 @@ package pl.uniq.photo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.uniq.board.models.Board;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.repository.PhotoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
