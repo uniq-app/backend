@@ -20,7 +20,7 @@ public class Board {
 
 	@Id
 	@GeneratedValue
-	private UUID id;
+	private UUID board_id;
 
 	@Column(name = "name")
 	private String name;

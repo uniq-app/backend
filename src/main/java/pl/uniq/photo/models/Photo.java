@@ -19,7 +19,7 @@ public class Photo {
 
 	@Id
 	@GeneratedValue
-	private UUID id;
+	private UUID photo_id;
 
 	@Column(name = "board_id")
 	private UUID board;

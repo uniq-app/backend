@@ -1,0 +1,4 @@
+insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('ff236c8a-bd41-4113-b9ff-c190c80c8a60', 'grachu', 'false', 'false', 'foxes', '2020-12-10 17:27:52.758000');
+insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('5672a4db-3c51-4345-ac81-d70181eb74f5', 'macik', 'false', 'false', 'weeding', '2020-12-10 17:27:57.030000');
+insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('7797a905-3748-4365-9ad3-723a98438b8a', 'baloo', 'false', 'false', 'pink', '2020-12-10 17:28:07.002000');
+insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('f0a5482b-e75a-430b-a343-cb55ae58b3bd', 'derulo', 'false', 'false', 'forest', '2020-12-10 17:28:14.351000');
