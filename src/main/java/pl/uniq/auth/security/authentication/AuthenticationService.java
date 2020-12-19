@@ -1,61 +1,74 @@
 package pl.uniq.auth.security.authentication;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.uniq.auth.dto.JwtTokenDto;
-import pl.uniq.auth.dto.LoginDto;
-import pl.uniq.auth.dto.SignUpDto;
-import pl.uniq.auth.security.jwt.JwtToken;
+import pl.uniq.auth.dto.AuthenticationResponse;
+import pl.uniq.auth.dto.AuthenticationRequest;
+import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.jwt.JwtTokenService;
+import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
 import pl.uniq.auth.user.User;
 import pl.uniq.auth.user.UserEntityRepository;
 
 @Service
 public class AuthenticationService {
-	private AuthenticationManager authenticationManager;
-	private final PasswordEncoder passwordEncoder;
+	private final static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+	private final CustomUserDetailsService customUserDetailsService;
+	private final AuthenticationManager authenticationManager;
 	private final UserEntityRepository userEntityRepository;
+	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenService jwtTokenService;
-	private final JwtToken jwtToken;
+	private final JwtUtil jwtUtil;
 
 	@Autowired
-	public AuthenticationService(PasswordEncoder passwordEncoder, UserEntityRepository userEntityRepository, JwtTokenService jwtTokenService, JwtToken jwtToken) {
-		this.passwordEncoder = passwordEncoder;
+	public AuthenticationService(AuthenticationManager authenticationManager, UserEntityRepository userEntityRepository, PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService, CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil) {
+		this.authenticationManager = authenticationManager;
 		this.userEntityRepository = userEntityRepository;
+		this.passwordEncoder = passwordEncoder;
 		this.jwtTokenService = jwtTokenService;
-		this.jwtToken = jwtToken;
+		this.customUserDetailsService = customUserDetailsService;
+		this.jwtUtil = jwtUtil;
 	}
 
-	public String register(SignUpDto signUpDto) {
-		if (!checkUserExists(signUpDto.getEmail())) {
-			User user = User.builder().email(signUpDto.getEmail()).password(signUpDto.getPassword()).roles(signUpDto.getRoles()).build();
+	public String register(AuthenticationRequest authenticationRequest) {
+		if (!checkUserExists(authenticationRequest.getUsername())) {
+			User user = User.builder().
+					username(authenticationRequest.getUsername()).
+					password(passwordEncoder.encode(authenticationRequest.getPassword())).
+					roles(authenticationRequest.getRoles()).
+					build();
 			userEntityRepository.save(user);
 			return "Created";
 		}
 		return "User you want to register exists";
 	}
 
-	public JwtTokenDto login(LoginDto loginDto) {
-		Authentication auth = authenticationManager.
-				authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		String jwt = jwtToken.generateToken(auth);
-		return new JwtTokenDto(jwt);
+	public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+		} catch (BadCredentialsException e) {
+			logger.error("Incorrect username or password");
+		}
+		UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		String jwt = jwtUtil.generateToken(userDetails);
+		jwtTokenService.addToken(jwt);
+		return new AuthenticationResponse(jwt);
 	}
 
 	public String logout(String authHeader) {
-		String token = jwtToken.parseJwt(authHeader);
+		String token = jwtUtil.parseHeader(authHeader);
 		jwtTokenService.revokeToken(token);
 		return "Logout";
 	}
 
-
 	private boolean checkUserExists(String email) {
-		return userEntityRepository.existsByEmail(email);
+		return userEntityRepository.existsByUsername(email);
 	}
 }

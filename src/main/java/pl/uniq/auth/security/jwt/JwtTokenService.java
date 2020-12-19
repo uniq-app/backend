@@ -15,8 +15,20 @@ public class JwtTokenService {
 		this.jwtTokenRepository = jwtTokenRepository;
 	}
 
+	public void addToken(String token)
+	{
+		UUID tokenUuid = UUID.nameUUIDFromBytes(token.getBytes());
+		jwtTokenRepository.save(JwtTokenEntity.builder().
+				token_id(tokenUuid).
+				token(token).
+				isActive(true).build());
+	}
+
 	public void revokeToken(String token) {
-		jwtTokenRepository.save(new JwtTokenEntity(UUID.nameUUIDFromBytes(token.getBytes())));
+		UUID tokenUuid = UUID.nameUUIDFromBytes(token.getBytes());
+		JwtTokenEntity jwt = jwtTokenRepository.findById(tokenUuid).get();
+		jwt.setIsActive(false);
+		jwtTokenRepository.save(jwt);
 	}
 
 	public boolean isTokenRevoked(UUID uuid) {
