@@ -26,7 +26,7 @@ public class Board {
 	private String name;
 
 	@Column(name = "creator_id")
-	private String creatorId;
+	private UUID creator_id;
 
 	@Column(name = "is_private")
 	private Boolean isPrivate = false;

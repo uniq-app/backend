@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
 import pl.uniq.photo.models.Photo;
@@ -20,11 +21,13 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final PhotoService photoService;
+	private final AuthorizationService authorizationService;
 
 	@Autowired
-	public BoardController(BoardService boardService, PhotoService photoService) {
+	public BoardController(BoardService boardService, PhotoService photoService, AuthorizationService authorizationService) {
 		this.boardService = boardService;
 		this.photoService = photoService;
+		this.authorizationService = authorizationService;
 	}
 
 	@GetMapping
@@ -39,7 +42,7 @@ public class BoardController {
 
 	@PostMapping(value = "/")
 	public ResponseEntity<Board> saveBoard(@RequestBody Board board) {
-		return new ResponseEntity<>(boardService.save(board), HttpStatus.OK);
+		return new ResponseEntity<>(boardService.save(board, authorizationService.getCurrentUser()), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}")

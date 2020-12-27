@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.uniq.auth.user.User;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.repository.BoardRepository;
@@ -29,7 +30,8 @@ public class BoardService {
 		return boardRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Resource with id: " + uuid + " not found!"));
 	}
 
-	public Board save(Board board) {
+	public Board save(Board board, User user) {
+		board.setCreator_id(user.getUser_id());
 		boardRepository.save(board);
 		return board;
 	}
@@ -38,8 +40,8 @@ public class BoardService {
 		Board storedBoard = findById(uuid);
 		if (board.getName() != null)
 			storedBoard.setName(board.getName());
-		if (board.getCreatorId() != null)
-			storedBoard.setCreatorId(board.getCreatorId());
+		if (board.getCreator_id() != null)
+			storedBoard.setCreator_id(board.getCreator_id());
 		if (board.getIsPrivate() != null)
 			storedBoard.setIsPrivate(board.getIsPrivate());
 		if (board.getIsCreatorHidden() != null)
