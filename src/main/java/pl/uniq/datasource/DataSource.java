@@ -13,7 +13,7 @@ public class DataSource {
     {
         return DataSourceBuilder
                 .create()
-                .url("jdbc:postgresql://localhost:5432/uniq")
+                .url("jdbc:postgresql://db:5432/uniq")
                 .username("admin")
                 .password("admin")
                 .type(HikariDataSource.class)
