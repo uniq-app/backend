@@ -4,16 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -21,11 +15,11 @@ import java.util.stream.Collectors;
 @Table(name = "uniq_user")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User {
 
 	@Id
 	@GeneratedValue
-	private UUID user_id;
+	private UUID userId;
 
 	@Column(name = "username")
 	private String username;
@@ -36,32 +30,4 @@ public class User implements UserDetails {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<Role> roles;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getRoles().
-				stream().
-				map(role -> new SimpleGrantedAuthority(role.name())).
-				collect(Collectors.toCollection(ArrayList::new));
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
 }

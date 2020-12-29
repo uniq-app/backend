@@ -9,7 +9,6 @@ import pl.uniq.auth.user.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Data
@@ -23,11 +22,6 @@ public class CustomUserDetails implements UserDetails {
 		return user.getRoles().stream()
 				.map(role ->  new SimpleGrantedAuthority(role.name()))
 				.collect(Collectors.toCollection(ArrayList::new));
-	}
-
-	public UUID getId()
-	{
-		return user.getUser_id();
 	}
 
 	@Override

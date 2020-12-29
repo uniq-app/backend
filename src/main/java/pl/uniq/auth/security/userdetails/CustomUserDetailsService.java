@@ -6,21 +6,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserEntityRepository;
+import pl.uniq.auth.user.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserEntityRepository userEntityRepository;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public CustomUserDetailsService(UserEntityRepository userEntityRepository) {
-		this.userEntityRepository = userEntityRepository;
+	public CustomUserDetailsService(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userEntityRepository.findByUsername(username);
+		User user = userRepository.findByUsername(username);
 		return new CustomUserDetails(user);
 	}
 }

@@ -1,7 +1,7 @@
-insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('ff236c8a-bd41-4113-b9ff-c190c80c8a60', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'foxes', '2020-12-10 17:27:52.758000');
-INSERT INTO public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) VALUES ('5672a4db-3c51-4345-ac81-d70181eb74f5', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'weeding', '2020-12-10 17:27:57.030000');
-INSERT INTO public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('7797a905-3748-4365-9ad3-723a98438b8a', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'pink', '2020-12-10 17:28:07.002000');
-insert into public.board (board_id, creator_id, is_creator_hidden, is_private, name, created_at) values ('f0a5482b-e75a-430b-a343-cb55ae58b3bd', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'forest', '2020-12-10 17:28:14.351000');
+insert into public.board (board_id, user_id, is_creator_hidden, is_private, name, created_at) values ('ff236c8a-bd41-4113-b9ff-c190c80c8a60', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'foxes', '2020-12-10 17:27:52.758000');
+INSERT INTO public.board (board_id, user_id, is_creator_hidden, is_private, name, created_at) VALUES ('5672a4db-3c51-4345-ac81-d70181eb74f5', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'weeding', '2020-12-10 17:27:57.030000');
+INSERT INTO public.board (board_id, user_id, is_creator_hidden, is_private, name, created_at) values ('7797a905-3748-4365-9ad3-723a98438b8a', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'pink', '2020-12-10 17:28:07.002000');
+insert into public.board (board_id, user_id, is_creator_hidden, is_private, name, created_at) values ('f0a5482b-e75a-430b-a343-cb55ae58b3bd', '2ea564e2-fd43-4835-afbc-930097bcb1ac', 'false', 'false', 'forest', '2020-12-10 17:28:14.351000');
 insert into public.photos (photo_id, board_id, value) values ('66591a22-b2d5-4b25-aae4-622dd616a8c1', 'f0a5482b-e75a-430b-a343-cb55ae58b3bd', '5fd27878a7a76140f9cedb60');
 insert into public.photos (photo_id, board_id, value) values ('b0341b7a-136b-4ec2-9d88-ec5db008aa40', 'f0a5482b-e75a-430b-a343-cb55ae58b3bd', '5fd2794ff7ccd7d7e7b78d51');
 insert into public.photos (photo_id, board_id, value) values ('e5e4a32a-21cf-44bb-a1bb-c434c4a2d181', 'f0a5482b-e75a-430b-a343-cb55ae58b3bd', '5fd279882a6be6c7fa914418');
@@ -19,5 +19,6 @@ insert into public.photos (photo_id, board_id, value) values ('71a88ded-b29e-4ca
 insert into public.photos (photo_id, board_id, value) values ('d33f56d3-0bea-4de4-b3fe-d7673e251aa3', '5672a4db-3c51-4345-ac81-d70181eb74f5', '5fd27bf114974e7f95995c43');
 insert into public.photos (photo_id, board_id, value) values ('d84f52c5-e9e9-4cdb-9988-353769efce5c', '5672a4db-3c51-4345-ac81-d70181eb74f5', '5fd27c070b47e49d5af78907');
 insert into public.photos (photo_id, board_id, value) values ('7b545881-4142-445e-9331-5c32b7242e61', '5672a4db-3c51-4345-ac81-d70181eb74f5', '5fd27c16e6cb42cb06c421bb');
-insert into public.uniq_user (user_id, password, username) values ('2683c4dd-8bd2-4cb8-b046-db2276a596d6', '$2a$10$TJCYrgrBQoaKTx22wJ5WjuA16uh.VKL51FM6glWjnpOKw9U.2ByNm', 'test');
-insert into public.user_roles (user_user_id, roles) values ('2683c4dd-8bd2-4cb8-b046-db2276a596d6', 'UNIQ_USER');
+insert into public.uniq_user (user_id, password, username) values ('2ea564e2-fd43-4835-afbc-930097bcb1ac', '$2a$10$TJCYrgrBQoaKTx22wJ5WjuA16uh.VKL51FM6glWjnpOKw9U.2ByNm', 'test');
+insert into public.user_roles (user_user_id, roles) values ('2ea564e2-fd43-4835-afbc-930097bcb1ac', 'UNIQ_USER');
+insert into public.tokens (token_id, created_at, is_active, token) values ('654583f3-d517-3ea1-8244-f27728857bf3', '2020-12-27 23:19:55.090000', 'true', 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNjA5MTA3NTk1LCJleHAiOjYwNDk2MDkxMDc1OTV9.D_K2QkjpmFHFYb2fhRgBeoTAZvGyQWAnJY8GAZ8qA4g4ZHNtu9CgTMBf2Xbwrr9uVHal9vwErg7-ooTbz-EJ-Q');

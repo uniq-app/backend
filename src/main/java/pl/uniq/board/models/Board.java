@@ -20,13 +20,13 @@ public class Board {
 
 	@Id
 	@GeneratedValue
-	private UUID board_id;
+	private UUID boardId;
+
+	@Column(name = "user_id")
+	private UUID userId;
 
 	@Column(name = "name")
 	private String name;
-
-	@Column(name = "creator_id")
-	private UUID creator_id;
 
 	@Column(name = "is_private")
 	private Boolean isPrivate = false;

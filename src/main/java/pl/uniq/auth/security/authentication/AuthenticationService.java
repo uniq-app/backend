@@ -15,22 +15,22 @@ import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.jwt.JwtTokenService;
 import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
 import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserEntityRepository;
+import pl.uniq.auth.user.UserRepository;
 
 @Service
 public class AuthenticationService {
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 	private final CustomUserDetailsService customUserDetailsService;
 	private final AuthenticationManager authenticationManager;
-	private final UserEntityRepository userEntityRepository;
+	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenService jwtTokenService;
 	private final JwtUtil jwtUtil;
 
 	@Autowired
-	public AuthenticationService(AuthenticationManager authenticationManager, UserEntityRepository userEntityRepository, PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService, CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil) {
+	public AuthenticationService(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService, CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil) {
 		this.authenticationManager = authenticationManager;
-		this.userEntityRepository = userEntityRepository;
+		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtTokenService = jwtTokenService;
 		this.customUserDetailsService = customUserDetailsService;
@@ -44,7 +44,7 @@ public class AuthenticationService {
 					password(passwordEncoder.encode(authenticationRequest.getPassword())).
 					roles(authenticationRequest.getRoles()).
 					build();
-			userEntityRepository.save(user);
+			userRepository.save(user);
 			return "Created";
 		}
 		return "User you want to register exists";
@@ -69,6 +69,6 @@ public class AuthenticationService {
 	}
 
 	private boolean checkUserExists(String email) {
-		return userEntityRepository.existsByUsername(email);
+		return userRepository.existsByUsername(email);
 	}
 }
