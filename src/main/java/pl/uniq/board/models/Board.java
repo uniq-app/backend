@@ -22,18 +22,18 @@ public class Board {
 
 	@Id
 	@GeneratedValue
-	private UUID board_id;
+	private UUID boardId;
+
+	@Column(name = "user_id")
+	private UUID userId;
 
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "description")
 	@Lob
+	@Column(name = "description")
 	@Type(type = "org.hibernate.type.TextType")
 	private String description;
-
-	@Column(name = "creator_id")
-	private String creatorId;
 
 	@Column(name = "is_private")
 	private Boolean isPrivate = false;
