@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.uniq.photo.models.Photo;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,6 +30,11 @@ public class Board {
 	@Column(name = "name")
 	private String name;
 
+	@Lob
+	@Column(name = "description")
+	@Type(type = "org.hibernate.type.TextType")
+	private String description;
+
 	@Column(name = "is_private")
 	private Boolean isPrivate = false;
 
@@ -37,4 +44,8 @@ public class Board {
 	@Column(name = "created_at")
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private Date timestamp = new Date();
+
+	@OneToOne(targetEntity = Photo.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "cover_id", referencedColumnName = "photo_id")
+	private Photo cover;
 }

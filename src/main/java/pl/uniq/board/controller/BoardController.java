@@ -66,7 +66,7 @@ public class BoardController {
 		return new ResponseEntity<>(photoService.findAllByBoard(uuid), HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/{uuid}/photos")
+	@PutMapping(value = "/{uuid}/photos")
 	public ResponseEntity<List<Photo>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
 		return new ResponseEntity<>(photoService.save(photos, uuid), HttpStatus.OK);
 	}
@@ -75,5 +75,16 @@ public class BoardController {
 	public ResponseEntity<String> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
 		photoService.delete(photos, uuid);
 		return ResponseEntity.ok().body("Removed");
+	}
+
+	@GetMapping(value = "/{uuid}/cover")
+	public ResponseEntity<Photo> getCover(@PathVariable(value = "uuid") UUID uuid) {
+		return new ResponseEntity<>(boardService.getCover(uuid), HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/{uuid}/cover")
+	public ResponseEntity<Board> updateCover(@PathVariable(value = "uuid") UUID uuid, @RequestBody Photo photo) {
+		Board storedBoard = boardService.updateCover(uuid, photo);
+		return new ResponseEntity<>(storedBoard, HttpStatus.OK);
 	}
 }
