@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="UniqBackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="backend" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="pl.uniq.UniqBackendApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <envs>
+      <env name="POSTGRES_HOST" value="localhost:5432" />
+      <env name="POSTGRES_DB" value="uniq" />
+      <env name="POSTGRES_USER" value="admin" />
+      <env name="POSTGRES_PASSWORD" value="admin" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
