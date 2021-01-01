@@ -48,4 +48,9 @@ public class Board {
 	@OneToOne(targetEntity = Photo.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "cover_id", referencedColumnName = "photo_id")
 	private Photo cover;
+
+	@Lob
+	@Column(name = "extra_data")
+	@Type(type = "org.hibernate.type.TextType")
+	private String extraData;
 }
