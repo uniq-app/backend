@@ -52,6 +52,8 @@ public class BoardService {
 			storedBoard.setIsPrivate(board.getIsPrivate());
 		if (board.getIsCreatorHidden() != null)
 			storedBoard.setIsCreatorHidden(board.getIsCreatorHidden());
+		if (board.getExtraData() != null)
+			storedBoard.setExtraData(board.getExtraData());
 		return storedBoard;
 	}
 
@@ -68,6 +70,7 @@ public class BoardService {
 
 	public Board updateCover(UUID uuid, Photo photo, User user) {
 		Board storedBoard = findById(uuid, user);
+		if  (photo.getPhoto_id() == null) photo.setPhoto_id(UUID.randomUUID());
 		Optional<Photo> storedPhoto = photoRepository.findById(photo.getPhoto_id());
 		storedPhoto.ifPresentOrElse(storedBoard::setCover, ()->{
 			storedBoard.setCover(photo);

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.uniq.board.models.Board;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -27,4 +27,8 @@ public class Photo {
 	@Column(name = "value")
 	private String value;
 
+	@Lob
+	@Column(name = "extra_data")
+	@Type(type = "org.hibernate.type.TextType")
+	private String extraData;
 }
