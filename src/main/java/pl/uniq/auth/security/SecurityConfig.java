@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth/logout").hasAnyAuthority("UNIQ_USER")
 				.antMatchers("/boards/**").hasAuthority("UNIQ_USER")
+				.antMatchers("/profile/**").hasAuthority("UNIQ_USER")
 				.antMatchers("/**").denyAll()
 				.anyRequest().authenticated();
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

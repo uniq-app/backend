@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,11 +22,22 @@ public class User {
 	@GeneratedValue
 	private UUID userId;
 
-	@Column(name = "username")
+	@Column(name = "username", nullable = false)
 	private String username;
 
-	@Column(name = "password")
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "password", nullable = false)
 	private String password;
+
+	@Lob
+	@Column(name = "bio")
+	@Type(type = "org.hibernate.type.TextType")
+	private String bio;
+
+	@Column(name = "avatar")
+	private String avatar;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
