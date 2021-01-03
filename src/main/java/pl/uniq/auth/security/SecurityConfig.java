@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth/logout").hasAnyAuthority("UNIQ_USER")
 				.antMatchers("/boards/**").hasAuthority("UNIQ_USER")
+				.antMatchers("/user/**").hasAuthority("UNIQ_USER")
 				.antMatchers("/**").denyAll()
 				.anyRequest().authenticated();
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -70,9 +71,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web
-				.ignoring()
-				.antMatchers("/v2/api-docs", "/v3/api-docs", "/configuration/**", "/swagger-resources/**",
-						"/swagger-ui.html", "/webjars/**", "/api-docs/**", "/swagger-ui/", "/swagger-ui/**");
+		web.ignoring().antMatchers("/v2/api-docs",
+				"/v3/api-docs",
+				"/configuration/**",
+				"/swagger-resources/**",
+				"/swagger-ui/**",
+				"/swagger-ui/",
+				"/swagger-ui.html",
+				"/webjars/**",
+				"/api-docs/**");
 	}
 }

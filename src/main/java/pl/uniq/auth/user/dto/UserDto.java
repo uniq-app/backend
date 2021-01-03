@@ -1,6 +1,7 @@
-package pl.uniq.auth.user;
+package pl.uniq.auth.user.dto;
 
 import lombok.Data;
+import pl.uniq.auth.user.Role;
 
 import java.util.Set;
 

@@ -52,19 +52,24 @@ public class AuthenticationService {
 
 	public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
 		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+			UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+			if (authenticationRequest.getUsername().equals(userDetails.getUsername()) &&
+				passwordEncoder.matches(authenticationRequest.getPassword(), userDetails.getPassword())) {
+				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+				String jwt = jwtUtil.generateToken(userDetails);
+				jwtTokenService.addToken(jwt);
+				return new AuthenticationResponse(jwt);
+			} else {
+				throw new BadCredentialsException("Wrong credentials");
+			}
 		} catch (BadCredentialsException e) {
-			logger.error("Incorrect username or password");
+			throw new BadCredentialsException("Wrong credentials");
 		}
-		UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-		String jwt = jwtUtil.generateToken(userDetails);
-		jwtTokenService.addToken(jwt);
-		return new AuthenticationResponse(jwt);
 	}
 
 	public String logout(String authHeader) {
 		String token = jwtUtil.parseHeader(authHeader);
-		jwtTokenService.revokeToken(token);
+		jwtTokenService.deleteToken(token);
 		return "Logout";
 	}
 

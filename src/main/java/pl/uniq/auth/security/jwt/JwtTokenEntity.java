@@ -19,7 +19,7 @@ import java.util.UUID;
 public class JwtTokenEntity {
 
 	@Id
-	private UUID token_id;
+	private UUID tokenId;
 
 	@Column(name = "token")
 	private String token;

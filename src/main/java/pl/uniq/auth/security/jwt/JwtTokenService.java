@@ -11,27 +11,20 @@ public class JwtTokenService {
 	private final JwtTokenRepository jwtTokenRepository;
 
 	@Autowired
-	public JwtTokenService(JwtTokenRepository jwtTokenRepository) {
+	public JwtTokenService(JwtTokenRepository jwtTokenRepository, JwtUtil jwtUtil) {
 		this.jwtTokenRepository = jwtTokenRepository;
 	}
 
-	public void addToken(String token)
-	{
+	public void addToken(String token) {
 		UUID tokenUuid = UUID.nameUUIDFromBytes(token.getBytes());
 		jwtTokenRepository.save(JwtTokenEntity.builder().
-				token_id(tokenUuid).
+				tokenId(tokenUuid).
 				token(token).
 				isActive(true).build());
 	}
 
-	public void revokeToken(String token) {
+	public void deleteToken(String token) {
 		UUID tokenUuid = UUID.nameUUIDFromBytes(token.getBytes());
-		JwtTokenEntity jwt = jwtTokenRepository.findById(tokenUuid).get();
-		jwt.setIsActive(false);
-		jwtTokenRepository.save(jwt);
-	}
-
-	public boolean isTokenRevoked(UUID uuid) {
-		return jwtTokenRepository.existsById(uuid);
+		jwtTokenRepository.deleteByTokenId(tokenUuid);
 	}
 }
