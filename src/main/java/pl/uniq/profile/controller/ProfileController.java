@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.auth.user.User;
+import pl.uniq.auth.user.UserDto;
 import pl.uniq.profile.service.ProfileService;
 
 @RestController
@@ -22,14 +23,14 @@ public class ProfileController {
 	}
 
 	@GetMapping
-	public ResponseEntity<User> getUserProfileDetails() {
+	public ResponseEntity<UserDto> getUserProfileDetails() {
 		User currentUser = authorizationService.getCurrentUser();
-		return new ResponseEntity<>(currentUser, HttpStatus.OK);
+		return new ResponseEntity<>(new UserDto(currentUser), HttpStatus.OK);
 	}
 
 	@PutMapping
-	public ResponseEntity<User> updateUserProfileDetails(@RequestBody User requestBodyUser) {
+	public ResponseEntity<UserDto> updateUserProfileDetails(@RequestBody UserDto requestBodyUser) {
 		User currentUser = authorizationService.getCurrentUser();
-		return new ResponseEntity<>(profileService.update(currentUser, requestBodyUser), HttpStatus.OK);
+		return new ResponseEntity<>(new UserDto(profileService.update(currentUser, requestBodyUser)), HttpStatus.OK);
 	}
 }
