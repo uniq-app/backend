@@ -24,6 +24,8 @@ public class CustomUserDetails implements UserDetails {
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
+	public String getEmail() { return user.getEmail(); }
+
 	@Override
 	public String getPassword() {
 		return user.getPassword();
@@ -51,6 +53,6 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return user.isActive();
 	}
 }

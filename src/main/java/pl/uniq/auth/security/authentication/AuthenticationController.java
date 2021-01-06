@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.dto.AuthenticationRequest;
+import pl.uniq.utils.Message;
+
+import javax.security.auth.login.AccountException;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -21,24 +24,25 @@ public class AuthenticationController {
 	}
 
 	@PostMapping(value = "/register")
-	ResponseEntity<String> signUp(@RequestBody AuthenticationRequest authenticationRequest) {
-		return new ResponseEntity<>(authenticationService.register(authenticationRequest), HttpStatus.OK);
+	ResponseEntity<Message> signUp(@RequestBody AuthenticationRequest authenticationRequest) {
+		try {
+			return new ResponseEntity<>(authenticationService.register(authenticationRequest), HttpStatus.CREATED);
+		} catch (BadCredentialsException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
 	}
 
 	@PostMapping(value = "/login")
 	ResponseEntity<AuthenticationResponse> signIn(@RequestBody AuthenticationRequest authenticationRequest) {
-		try
-		{
+		try {
 			return new ResponseEntity<>(authenticationService.login(authenticationRequest), HttpStatus.OK);
-		}
-		catch (BadCredentialsException e)
-		{
+		} catch (BadCredentialsException | AccountException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
 	@PostMapping(value = "/logout")
-	ResponseEntity<String> singOut(@RequestHeader("Authorization") String authHeader) {
+	ResponseEntity<Message> singOut(@RequestHeader("Authorization") String authHeader) {
 		return new ResponseEntity<>(authenticationService.logout(authHeader), HttpStatus.OK);
 	}
 }
