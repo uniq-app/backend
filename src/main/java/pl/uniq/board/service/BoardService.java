@@ -60,7 +60,8 @@ public class BoardService {
 			storedBoard.setIsPrivate(board.getIsPrivate());
 		if (board.getExtraData() != null)
 			storedBoard.setExtraData(board.getExtraData());
-
+		if (board.getCover() != null)
+			storedBoard.setCover(board.getCover());
 		boardRepository.save(storedBoard);
 		return BoardDto.create(storedBoard);
 	}
