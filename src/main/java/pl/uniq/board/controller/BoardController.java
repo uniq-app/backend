@@ -6,10 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.auth.user.User;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
+import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.service.PhotoService;
 
@@ -38,8 +40,12 @@ public class BoardController {
 	}
 
 	@GetMapping(value = "/{uuid}")
-	public Board getBoardById(@PathVariable(value = "uuid") UUID uuid) {
-		return boardService.findById(uuid, authorizationService.getCurrentUser());
+	public ResponseEntity<Board> getBoardById(@PathVariable(value = "uuid") UUID uuid) {
+		try {
+			return new ResponseEntity<>(boardService.findById(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
+		} catch (ResourceNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
 	}
 
 	@PostMapping(value = "/")
