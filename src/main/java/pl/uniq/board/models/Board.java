@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.uniq.photo.models.Photo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -49,4 +49,8 @@ public class Board {
 	@Column(name = "extra_data")
 	@Type(type = "org.hibernate.type.TextType")
 	private String extraData;
+
+	@OneToMany(mappedBy = "to")
+	private List<Follow> followers;
+
 }

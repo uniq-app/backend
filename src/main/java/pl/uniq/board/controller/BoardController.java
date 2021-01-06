@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.auth.user.User;
+import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.service.PhotoService;
+import pl.uniq.utils.Message;
 
 import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/boards")
@@ -34,37 +37,38 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public Page<Board> getAll(@RequestParam(required = false) String creator, Pageable page) {
+	public Page<BoardDto> getAll(@RequestParam(required = false) String creator, Pageable page) {
 		User user = authorizationService.getCurrentUser();
 		return boardService.findAll(page, user.getUserId());
 	}
 
 	@GetMapping(value = "/{uuid}")
-	public ResponseEntity<Board> getBoardById(@PathVariable(value = "uuid") UUID uuid) {
+	public ResponseEntity<BoardDto> getBoardById(@PathVariable(value = "uuid") UUID uuid) {
 		try {
-			return new ResponseEntity<>(boardService.findById(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
+			return new ResponseEntity<>(boardService.findBoardById(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
 		} catch (ResourceNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<Board> saveBoard(@RequestBody Board board) {
+	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
 		return new ResponseEntity<>(boardService.save(board, authorizationService.getCurrentUser()), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}")
-	public ResponseEntity<Board> updateBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody Board board) {
-		Board storedBoard = boardService.updateBoard(uuid, board, authorizationService.getCurrentUser());
-		return new ResponseEntity<>(storedBoard, HttpStatus.OK);
+	public ResponseEntity<BoardDto> updateBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody Board board) {
+		return new ResponseEntity<>(boardService.updateBoard(uuid, board, authorizationService.getCurrentUser()), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{uuid}")
-	public ResponseEntity<String> deleteBoard(@PathVariable(value = "uuid") UUID uuid) {
-		Board storedBoard = boardService.findById(uuid, authorizationService.getCurrentUser());
-
-		boardService.delete(storedBoard);
-		return ResponseEntity.ok().body("Removed");
+	public ResponseEntity<Message> deleteBoard(@PathVariable(value = "uuid") UUID uuid) {
+		try {
+			boardService.delete(uuid, authorizationService.getCurrentUser());
+		} catch (ResourceNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+		return new ResponseEntity<>(new Message("Removed"), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/{uuid}/photos")
@@ -78,8 +82,18 @@ public class BoardController {
 	}
 
 	@DeleteMapping(value = "/{uuid}/photos")
-	public ResponseEntity<String> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
+	public ResponseEntity<Message> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
 		photoService.delete(photos, uuid);
-		return ResponseEntity.ok().body("Removed");
+		return new ResponseEntity<>(new Message("Removed"), HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/{uuid}/follow")
+	public ResponseEntity<Message> followBoard(@PathVariable(value = "uuid") UUID uuid) {
+		try {
+			boardService.follow(uuid, authorizationService.getCurrentUser());
+		} catch (ResourceNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+		return new ResponseEntity<>(new Message("Followed"), HttpStatus.OK);
 	}
 }
