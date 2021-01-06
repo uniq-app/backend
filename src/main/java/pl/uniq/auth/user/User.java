@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import pl.uniq.board.models.Follow;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,4 +47,7 @@ public class User {
 
 	@Column(name = "is_active")
 	private boolean isActive;
+
+	@OneToMany(mappedBy = "from")
+	private List<Follow> following;
 }
