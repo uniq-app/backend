@@ -65,6 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/user/forgot/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/user/resend//**").permitAll()
 				.antMatchers(HttpMethod.PUT, "/user/activation/**").permitAll()
+				.antMatchers("/profile/**").hasAuthority("UNIQ_USER")
 				.antMatchers("/boards/**").hasAuthority("UNIQ_USER")
 				.antMatchers("/user/**").hasAuthority("UNIQ_USER")
 				.antMatchers("/**").denyAll()
