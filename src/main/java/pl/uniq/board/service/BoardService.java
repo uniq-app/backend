@@ -50,31 +50,13 @@ public class BoardService {
 			storedBoard.setUserId(board.getUserId());
 		if (board.getIsPrivate() != null)
 			storedBoard.setIsPrivate(board.getIsPrivate());
-		if (board.getIsCreatorHidden() != null)
-			storedBoard.setIsCreatorHidden(board.getIsCreatorHidden());
 		if (board.getExtraData() != null)
 			storedBoard.setExtraData(board.getExtraData());
+		boardRepository.save(storedBoard);
 		return storedBoard;
 	}
 
 	public void delete(Board board) {
 		boardRepository.delete(board);
-	}
-
-	public Photo getCover(UUID uuid, User user) {
-		Board storedBoard = findById(uuid, user);
-		if (storedBoard.getCover() != null)
-			return storedBoard.getCover();
-		throw new ResourceNotFoundException("This board id: " + uuid + " has no cover!");
-	}
-
-	public Board updateCover(UUID uuid, Photo photo, User user) {
-		Board storedBoard = findById(uuid, user);
-		if  (photo.getPhoto_id() == null) photo.setPhoto_id(UUID.randomUUID());
-		Optional<Photo> storedPhoto = photoRepository.findById(photo.getPhoto_id());
-		storedPhoto.ifPresentOrElse(storedBoard::setCover, ()->{
-			storedBoard.setCover(photo);
-		});
-		return boardRepository.save(storedBoard);
 	}
 }
