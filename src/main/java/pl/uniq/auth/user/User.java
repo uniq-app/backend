@@ -22,11 +22,11 @@ public class User {
 	@GeneratedValue
 	private UUID userId;
 
-	@Column(name = "username", nullable = false)
-	private String username;
-
 	@Column(name = "email", nullable = false)
 	private String email;
+
+	@Column(name = "username", nullable = false)
+	private String username;
 
 	@Column(name = "password", nullable = false)
 	private String password;
@@ -42,4 +42,7 @@ public class User {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<Role> roles;
+
+	@Column(name = "is_active")
+	private boolean isActive;
 }

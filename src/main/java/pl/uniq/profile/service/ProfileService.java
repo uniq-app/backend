@@ -3,8 +3,8 @@ package pl.uniq.profile.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserDto;
 import pl.uniq.auth.user.UserRepository;
+import pl.uniq.auth.user.dto.UserDto;
 
 @Service
 public class ProfileService {

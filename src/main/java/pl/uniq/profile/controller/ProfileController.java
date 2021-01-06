@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserDto;
+import pl.uniq.auth.user.dto.UserDto;
 import pl.uniq.profile.service.ProfileService;
 
 @RestController

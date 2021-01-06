@@ -1,16 +1,18 @@
-package pl.uniq.auth.user;
+package pl.uniq.auth.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.uniq.auth.user.Role;
+import pl.uniq.auth.user.User;
 
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
 	private String username;
 	private String email;

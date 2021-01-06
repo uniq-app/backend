@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface JwtTokenRepository extends JpaRepository<JwtTokenEntity, UUID> {}
+public interface JwtTokenRepository extends JpaRepository<JwtTokenEntity, UUID> {
+	JwtTokenEntity findByTokenId(UUID uuid);
+	void deleteByTokenId(UUID uuid);
+}
