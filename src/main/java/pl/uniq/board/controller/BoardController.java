@@ -76,15 +76,4 @@ public class BoardController {
 		photoService.delete(photos, uuid);
 		return ResponseEntity.ok().body("Removed");
 	}
-
-	@GetMapping(value = "/{uuid}/cover")
-	public ResponseEntity<Photo> getCover(@PathVariable(value = "uuid") UUID uuid) {
-		return new ResponseEntity<>(boardService.getCover(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
-	}
-
-	@PutMapping(value = "/{uuid}/cover")
-	public ResponseEntity<Board> updateCover(@PathVariable(value = "uuid") UUID uuid, @RequestBody Photo photo) {
-		Board storedBoard = boardService.updateCover(uuid, photo, authorizationService.getCurrentUser());
-		return new ResponseEntity<>(storedBoard, HttpStatus.OK);
-	}
 }
