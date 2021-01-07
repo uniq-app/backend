@@ -42,9 +42,13 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public Page<BoardDto> getAll(@RequestParam(required = false) String creator, Pageable page) {
-		User user = authorizationService.getCurrentUser();
-		return boardService.findAll(page, user.getUserId());
+	public Page<BoardDto> getAll(Pageable page) {
+		return boardService.findAll(page, authorizationService.getCurrentUser());
+	}
+
+	@GetMapping(value = "/followed")
+	public Page<BoardDto> getAllFollowed(Pageable page) {
+		return boardService.findAllFollowed(page, authorizationService.getCurrentUser());
 	}
 
 	@GetMapping(value = "/{uuid}")

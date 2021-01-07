@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
-import pl.uniq.follow.model.UserBoardFollow;
 import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.follow.repository.UserBoardFollowRepository;
 import pl.uniq.exceptions.ResourceNotFoundException;
@@ -29,13 +28,14 @@ public class BoardService {
 		this.userBoardFollowRepository = userBoardFollowRepository;
 	}
 
-	public Page<BoardDto> findAll(Pageable page, UUID userId) {
-		List<BoardDto> boards = boardRepository.findAllByUserId(userId).stream().map(BoardDto::create).collect(Collectors.toList());
+	public Page<BoardDto> findAll(Pageable page, User user) {
+		List<BoardDto> boards = boardRepository.findAllByUserId(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
-	public Board findById(UUID uuid, User user) throws ResourceNotFoundException {
-		return boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
+	public Page<BoardDto> findAllFollowed(Pageable page, User user) {
+		List<BoardDto> boards = boardRepository.findBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
+		return new PageImpl<>(boards, page, boards.size());
 	}
 
 	public BoardDto findBoardById(UUID uuid, User user) throws ResourceNotFoundException {
