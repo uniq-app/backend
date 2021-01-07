@@ -11,6 +11,7 @@ import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
+import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.FollowAlreadyExistsException;
 import pl.uniq.exceptions.FollowNotFoundException;
 import pl.uniq.exceptions.ResourceNotFoundException;
@@ -42,26 +43,28 @@ public class BoardController {
 
 	@GetMapping
 	public Page<BoardDto> getAll(Pageable page) {
-		return boardService.findAll(page, authorizationService.getCurrentUser());
+		return boardService.getAllBoards(page, authorizationService.getCurrentUser());
 	}
 
 	@GetMapping(value = "/followed")
 	public Page<BoardDto> getAllFollowed(Pageable page) {
-		return boardService.findAllFollowed(page, authorizationService.getCurrentUser());
+		return boardService.getAllFollowed(page, authorizationService.getCurrentUser());
 	}
 
 	@GetMapping(value = "/{uuid}")
 	public ResponseEntity<BoardDto> getBoardById(@PathVariable(value = "uuid") UUID uuid) {
 		try {
-			return new ResponseEntity<>(boardService.findBoardById(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
+			return new ResponseEntity<>(boardService.getBoardById(uuid, authorizationService.getCurrentUser()), HttpStatus.OK);
 		} catch (ResourceNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		} catch (AuthorizationException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 	}
 
 	@PostMapping(value = "/")
 	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
-		return new ResponseEntity<>(boardService.save(board, authorizationService.getCurrentUser()), HttpStatus.OK);
+		return new ResponseEntity<>(boardService.saveBoard(board, authorizationService.getCurrentUser()), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}")
@@ -72,7 +75,7 @@ public class BoardController {
 	@DeleteMapping(value = "/{uuid}")
 	public ResponseEntity<Message> deleteBoard(@PathVariable(value = "uuid") UUID uuid) {
 		try {
-			boardService.delete(uuid, authorizationService.getCurrentUser());
+			boardService.deleteBoard(uuid, authorizationService.getCurrentUser());
 		} catch (ResourceNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
