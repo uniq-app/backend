@@ -50,4 +50,7 @@ public class User {
 
 	@OneToMany(mappedBy = "from")
 	private List<UserBoardFollow> following;
+
+	@Column(name = "fcm_token")
+	private String FCMToken;
 }
