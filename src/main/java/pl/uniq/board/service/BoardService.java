@@ -13,6 +13,8 @@ import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.follow.repository.UserBoardFollowRepository;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,8 +31,13 @@ public class BoardService {
 		this.userBoardFollowRepository = userBoardFollowRepository;
 	}
 
-	public Page<BoardDto> findAll(Pageable page, UUID userId) {
-		List<BoardDto> boards = boardRepository.findAllByUserId(userId).stream().map(BoardDto::create).collect(Collectors.toList());
+	public Page<BoardDto> findAll(Pageable page, User user) {
+		List<BoardDto> boards = boardRepository.findAllByUserId(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
+		return new PageImpl<>(boards, page, boards.size());
+	}
+
+	public Page<BoardDto> findAllFollowed(Pageable page, User user) {
+		List<BoardDto> boards = boardRepository.findBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
