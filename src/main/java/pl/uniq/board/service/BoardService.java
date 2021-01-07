@@ -29,7 +29,7 @@ public class BoardService {
 	}
 
 	public Page<BoardDto> getAllBoards(Pageable page, User user) {
-		List<BoardDto> boards = boardRepository.findAllByUserId(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
+		List<BoardDto> boards = boardRepository.findAllByUserIdOrderByTimestampAsc(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, UUID> {
 
-	List<Board> findAllByUserId(UUID userId);
+	List<Board> findAllByUserIdOrderByTimestampAsc(UUID userId);
 
 	@Query(value = "SELECT * FROM board WHERE (board.name LIKE ?1 OR board.description LIKE ?1) AND board.is_private = false", nativeQuery = true)
 	List<Board> findAllSearched(String key);
