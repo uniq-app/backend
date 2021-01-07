@@ -1,0 +1,15 @@
+package pl.uniq.follow.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import pl.uniq.auth.user.User;
+import pl.uniq.board.models.Board;
+import pl.uniq.follow.model.UserBoardFollow;
+
+import java.util.UUID;
+
+@Repository
+public interface UserBoardFollowRepository extends JpaRepository<UserBoardFollow, UUID> {
+
+	UserBoardFollow findUserBoardFollowByFromAndTo(User from, Board to);
+}

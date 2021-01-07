@@ -1,10 +1,11 @@
-package pl.uniq.board.models;
+package pl.uniq.follow.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.uniq.auth.user.User;
+import pl.uniq.board.models.Board;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_board_followers")
-public class Follow {
+public class UserBoardFollow {
 
 	@Id
 	@GeneratedValue

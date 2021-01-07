@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.uniq.follow.model.UserBoardFollow;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -51,6 +52,6 @@ public class Board {
 	private String extraData;
 
 	@OneToMany(mappedBy = "to")
-	private List<Follow> followers;
+	private List<UserBoardFollow> followers;
 
 }

@@ -12,7 +12,10 @@ import pl.uniq.auth.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
+import pl.uniq.exceptions.FollowAlreadyExists;
+import pl.uniq.exceptions.FollowNotFound;
 import pl.uniq.exceptions.ResourceNotFoundException;
+import pl.uniq.follow.service.UserBoardFollowService;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.service.PhotoService;
 import pl.uniq.utils.Message;
@@ -27,12 +30,14 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final PhotoService photoService;
+	private final UserBoardFollowService userBoardFollowService;
 	private final AuthorizationService authorizationService;
 
 	@Autowired
-	public BoardController(BoardService boardService, PhotoService photoService, AuthorizationService authorizationService) {
+	public BoardController(BoardService boardService, PhotoService photoService, AuthorizationService authorizationService, UserBoardFollowService userBoardFollowService) {
 		this.boardService = boardService;
 		this.photoService = photoService;
+		this.userBoardFollowService = userBoardFollowService;
 		this.authorizationService = authorizationService;
 	}
 
@@ -90,10 +95,20 @@ public class BoardController {
 	@PostMapping(value = "/{uuid}/follow")
 	public ResponseEntity<Message> followBoard(@PathVariable(value = "uuid") UUID uuid) {
 		try {
-			boardService.follow(uuid, authorizationService.getCurrentUser());
-		} catch (ResourceNotFoundException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			userBoardFollowService.follow(uuid, authorizationService.getCurrentUser());
+		} catch (FollowAlreadyExists alreadyExists) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, alreadyExists.getMessage());
 		}
 		return new ResponseEntity<>(new Message("Followed"), HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/{uuid}/unfollow")
+	public ResponseEntity<Message> unfollowBoard(@PathVariable(value = "uuid") UUID uuid) {
+		try {
+			userBoardFollowService.unfollow(uuid, authorizationService.getCurrentUser());
+		} catch (FollowNotFound notFound) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, notFound.getMessage());
+		}
+		return new ResponseEntity<>(new Message("Unfollowed"), HttpStatus.OK);
 	}
 }

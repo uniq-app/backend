@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import pl.uniq.board.models.Follow;
+import pl.uniq.follow.model.UserBoardFollow;
 
 import javax.persistence.*;
 import java.util.List;
@@ -49,5 +49,5 @@ public class User {
 	private boolean isActive;
 
 	@OneToMany(mappedBy = "from")
-	private List<Follow> following;
+	private List<UserBoardFollow> following;
 }
