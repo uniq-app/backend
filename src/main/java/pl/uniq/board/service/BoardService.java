@@ -13,6 +13,7 @@ import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -76,5 +77,13 @@ public class BoardService {
 	public void deleteBoard(UUID uuid, User user) {
 		Board storedBoard = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
 		boardRepository.delete(storedBoard);
+	}
+
+	public Board findBoardByBoardIdAndIsPrivate(UUID uuid) {
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndIsPrivate(uuid, false);
+		boardOptional.orElseThrow(() -> {
+			throw new ResourceNotFoundException("Board with id: " + uuid.toString() + " not found.");
+		});
+		return boardOptional.get();
 	}
 }
