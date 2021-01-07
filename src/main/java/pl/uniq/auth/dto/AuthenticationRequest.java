@@ -11,5 +11,5 @@ public class AuthenticationRequest implements Serializable {
 	private String email;
 	private String username;
 	private String password;
-	private final Set<Role> roles = Set.of(Role.UNIQ_USER);
+	private String FCMToken;
 }

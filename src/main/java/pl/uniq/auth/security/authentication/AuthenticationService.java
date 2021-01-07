@@ -21,6 +21,7 @@ import pl.uniq.auth.user.UserRepository;
 import pl.uniq.utils.Message;
 
 import javax.security.auth.login.AccountException;
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
@@ -74,6 +75,9 @@ public class AuthenticationService {
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), authenticationRequest.getPassword()));
 				String jwt = jwtUtil.generateToken(userDetails);
 				jwtTokenService.addToken(jwt);
+				User currentUser = userDetails.getUser();
+				currentUser.setFCMToken(authenticationRequest.getFCMToken());
+				userRepository.save(currentUser);
 				return new AuthenticationResponse(jwt);
 			} else {
 				throw new AccountException("Account is not active. Use code on sent on your email to activate account");
@@ -83,8 +87,12 @@ public class AuthenticationService {
 		}
 	}
 
+	@Transactional
 	public Message logout(String authHeader) {
 		String token = jwtUtil.parseHeader(authHeader);
+		User currentUser = userRepository.findByUsername(jwtUtil.extractUsername(token));
+		currentUser.setFCMToken(null);
+		userRepository.save(currentUser);
 		jwtTokenService.deleteToken(token);
 		return new Message("User has been logged out");
 	}
