@@ -69,7 +69,11 @@ public class BoardController {
 
 	@PutMapping(value = "/{uuid}")
 	public ResponseEntity<BoardDto> updateBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody Board board) {
-		return new ResponseEntity<>(boardService.updateBoard(uuid, board, authorizationService.getCurrentUser()), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(boardService.updateBoard(uuid, board, authorizationService.getCurrentUser()), HttpStatus.OK);
+		} catch (ResourceNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
 	}
 
 	@DeleteMapping(value = "/{uuid}")

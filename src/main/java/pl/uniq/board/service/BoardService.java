@@ -13,6 +13,7 @@ import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,16 +37,21 @@ public class BoardService {
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
-	public BoardDto getBoardById(UUID uuid, User user) throws ResourceNotFoundException {
-		Board board = boardRepository.findBoardByBoardId(uuid);
-		if (!board.getIsPrivate()) {
-			return BoardDto.create(board);
-		} else {
-			if (board.getUserId().equals(user.getUserId())) {
+	public BoardDto getBoardById(UUID uuid, User user) {
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardId(uuid);
+		if (boardOptional.isPresent()) {
+			Board board = boardOptional.get();
+			if (!board.getIsPrivate()) {
 				return BoardDto.create(board);
 			} else {
-				throw new AuthorizationException("You do not have access to this resource");
+				if (board.getUserId().equals(user.getUserId())) {
+					return BoardDto.create(board);
+				} else {
+					throw new AuthorizationException("You do not have access to this resource");
+				}
 			}
+		} else {
+			throw new ResourceNotFoundException("Board with given id does not exist");
 		}
 	}
 
@@ -56,25 +62,35 @@ public class BoardService {
 	}
 
 	public BoardDto updateBoard(UUID uuid, Board board, User user) {
-		Board storedBoard = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
-		if (board.getName() != null)
-			storedBoard.setName(board.getName());
-		if (board.getDescription() != null)
-			storedBoard.setDescription(board.getDescription());
-		if (board.getUserId() != null)
-			storedBoard.setUserId(board.getUserId());
-		if (board.getIsPrivate() != null)
-			storedBoard.setIsPrivate(board.getIsPrivate());
-		if (board.getExtraData() != null)
-			storedBoard.setExtraData(board.getExtraData());
-		if (board.getCover() != null)
-			storedBoard.setCover(board.getCover());
-		boardRepository.save(storedBoard);
-		return BoardDto.create(storedBoard);
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
+		if (boardOptional.isPresent()) {
+			Board storedBoard = boardOptional.get();
+			if (board.getName() != null)
+				storedBoard.setName(board.getName());
+			if (board.getDescription() != null)
+				storedBoard.setDescription(board.getDescription());
+			if (board.getUserId() != null)
+				storedBoard.setUserId(board.getUserId());
+			if (board.getIsPrivate() != null)
+				storedBoard.setIsPrivate(board.getIsPrivate());
+			if (board.getExtraData() != null)
+				storedBoard.setExtraData(board.getExtraData());
+			if (board.getCover() != null)
+				storedBoard.setCover(board.getCover());
+			boardRepository.save(storedBoard);
+			return BoardDto.create(storedBoard);
+		} else {
+			throw new ResourceNotFoundException("Board with given id does not exist");
+		}
+
 	}
 
 	public void deleteBoard(UUID uuid, User user) {
-		Board storedBoard = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
-		boardRepository.delete(storedBoard);
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
+		if (boardOptional.isPresent()) {
+			boardRepository.delete(boardOptional.get());
+		} else {
+			throw new ResourceNotFoundException("Board with given id does not exist");
+		}
 	}
 }
