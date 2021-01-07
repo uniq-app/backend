@@ -12,6 +12,7 @@ import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,16 @@ public class BoardService {
 	public Page<BoardDto> getAllFollowed(Pageable page, User user) {
 		List<BoardDto> boards = boardRepository.findPublicBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
+	}
+
+	public Page<BoardDto> getAllSearched(Pageable page, String query) {
+		if (!query.isBlank()) {
+			query = "%" + query + "%";
+			List<BoardDto> boards = boardRepository.findAllSearched(query).stream().map(BoardDto::create).collect(Collectors.toList());
+			return new PageImpl<>(boards, page, boards.size());
+		} else {
+			return new PageImpl<>(List.of(), page, 0);
+		}
 	}
 
 	public BoardDto getBoardById(UUID uuid, User user) {

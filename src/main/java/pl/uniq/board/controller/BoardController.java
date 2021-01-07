@@ -51,6 +51,11 @@ public class BoardController {
 		return boardService.getAllFollowed(page, authorizationService.getCurrentUser());
 	}
 
+	@GetMapping(value = "/search")
+	public Page<BoardDto> getAllByKey(Pageable page, @RequestParam String q) {
+		return boardService.getAllSearched(page, q);
+	}
+
 	@GetMapping(value = "/{uuid}")
 	public ResponseEntity<BoardDto> getBoardById(@PathVariable(value = "uuid") UUID uuid) {
 		try {
