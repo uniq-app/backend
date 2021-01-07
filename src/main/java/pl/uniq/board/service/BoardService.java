@@ -34,7 +34,7 @@ public class BoardService {
 	}
 
 	public Page<BoardDto> findAllFollowed(Pageable page, User user) {
-		List<BoardDto> boards = boardRepository.findBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
+		List<BoardDto> boards = boardRepository.findPublicBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 

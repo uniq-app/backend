@@ -6,10 +6,11 @@ import pl.uniq.auth.user.User;
 import pl.uniq.board.models.Board;
 import pl.uniq.follow.model.UserBoardFollow;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface UserBoardFollowRepository extends JpaRepository<UserBoardFollow, UUID> {
 
-	UserBoardFollow findUserBoardFollowByFromAndTo(User from, Board to);
+	Optional<UserBoardFollow> findUserBoardFollowByFromAndTo(User from, Board to);
 }
