@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
-import pl.uniq.board.models.Follow;
+import pl.uniq.follow.model.UserBoardFollow;
 import pl.uniq.board.repository.BoardRepository;
-import pl.uniq.board.repository.FollowRepository;
+import pl.uniq.follow.repository.UserBoardFollowRepository;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
 import java.util.List;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class BoardService {
 
 	private final BoardRepository boardRepository;
-	private final FollowRepository followRepository;
+	private final UserBoardFollowRepository userBoardFollowRepository;
 
 	@Autowired
-	public BoardService(BoardRepository boardRepository, FollowRepository followRepository) {
+	public BoardService(BoardRepository boardRepository, UserBoardFollowRepository userBoardFollowRepository) {
 		this.boardRepository = boardRepository;
-		this.followRepository = followRepository;
+		this.userBoardFollowRepository = userBoardFollowRepository;
 	}
 
 	public Page<BoardDto> findAll(Pageable page, UUID userId) {
@@ -69,11 +69,5 @@ public class BoardService {
 	public void delete(UUID uuid, User user) {
 		Board storedBoard = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
 		boardRepository.delete(storedBoard);
-	}
-
-	public void follow(UUID uuid, User currentUser) throws ResourceNotFoundException {
-		Board storedBoard = boardRepository.findBoardByBoardId(uuid);
-		Follow follow = Follow.builder().from(currentUser).to(storedBoard).build();
-		followRepository.save(follow);
 	}
 }
