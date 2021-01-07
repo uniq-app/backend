@@ -8,12 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
-import pl.uniq.auth.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
-import pl.uniq.exceptions.FollowAlreadyExists;
-import pl.uniq.exceptions.FollowNotFound;
+import pl.uniq.exceptions.FollowAlreadyExistsException;
+import pl.uniq.exceptions.FollowNotFoundException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.follow.service.UserBoardFollowService;
 import pl.uniq.photo.models.Photo;
@@ -100,7 +99,7 @@ public class BoardController {
 	public ResponseEntity<Message> followBoard(@PathVariable(value = "uuid") UUID uuid) {
 		try {
 			userBoardFollowService.follow(uuid, authorizationService.getCurrentUser());
-		} catch (FollowAlreadyExists alreadyExists) {
+		} catch (FollowAlreadyExistsException alreadyExists) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, alreadyExists.getMessage());
 		}
 		return new ResponseEntity<>(new Message("Followed"), HttpStatus.OK);
@@ -110,7 +109,7 @@ public class BoardController {
 	public ResponseEntity<Message> unfollowBoard(@PathVariable(value = "uuid") UUID uuid) {
 		try {
 			userBoardFollowService.unfollow(uuid, authorizationService.getCurrentUser());
-		} catch (FollowNotFound notFound) {
+		} catch (FollowNotFoundException notFound) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, notFound.getMessage());
 		}
 		return new ResponseEntity<>(new Message("Unfollowed"), HttpStatus.OK);

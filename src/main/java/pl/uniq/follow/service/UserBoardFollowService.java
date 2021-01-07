@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.repository.BoardRepository;
-import pl.uniq.exceptions.FollowAlreadyExists;
-import pl.uniq.exceptions.FollowNotFound;
+import pl.uniq.exceptions.FollowAlreadyExistsException;
+import pl.uniq.exceptions.FollowNotFoundException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.follow.model.UserBoardFollow;
 import pl.uniq.follow.repository.UserBoardFollowRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,22 +25,31 @@ public class UserBoardFollowService {
 		this.userBoardFollowRepository = userBoardFollowRepository;
 	}
 
-	public void follow(UUID uuid, User currentUser) throws ResourceNotFoundException, FollowAlreadyExists {
-		Board storedBoard = boardRepository.findBoardByBoardId(uuid);
-		UserBoardFollow existingFollow = userBoardFollowRepository.findUserBoardFollowByFromAndTo(currentUser, storedBoard);
-		if (existingFollow != null) {
-			throw new FollowAlreadyExists("User " + currentUser.getUsername() + " already follows board \"" + storedBoard.getName() + "\"");
-		}
+	public void follow(UUID uuid, User currentUser) throws ResourceNotFoundException, FollowAlreadyExistsException {
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndIsPrivate(uuid, false);
+		boardOptional.orElseThrow(() -> {
+			throw new ResourceNotFoundException("Board with id: " + uuid.toString() + " not found.");
+		});
+		Board storedBoard = boardOptional.get();
+		Optional<UserBoardFollow> followOptional = userBoardFollowRepository.findUserBoardFollowByFromAndTo(currentUser, storedBoard);
+		followOptional.ifPresent(follow -> {
+			throw new FollowAlreadyExistsException("User " + follow.getFrom().getUserId() + " already follows board \"" + follow.getTo().getBoardId() + "\"");
+		});
 		UserBoardFollow userBoardFollow = UserBoardFollow.builder().from(currentUser).to(storedBoard).build();
 		userBoardFollowRepository.save(userBoardFollow);
 	}
 
-	public void unfollow(UUID uuid, User currentUser) throws ResourceNotFoundException, FollowNotFound {
-		Board storedBoard = boardRepository.findBoardByBoardId(uuid);
-		UserBoardFollow userBoardFollow = userBoardFollowRepository.findUserBoardFollowByFromAndTo(currentUser, storedBoard);
-		if (userBoardFollow == null) {
-			throw new FollowNotFound("User " + currentUser.getUsername() + " is not following board \"" + storedBoard.getName() + "\"");
-		}
+	public void unfollow(UUID uuid, User currentUser) throws ResourceNotFoundException, FollowNotFoundException {
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndIsPrivate(uuid, false);
+		boardOptional.orElseThrow(() -> {
+			throw new ResourceNotFoundException("Board with id: " + uuid.toString() + " not found.");
+		});
+		Board storedBoard = boardOptional.get();
+		Optional<UserBoardFollow> followOptional = userBoardFollowRepository.findUserBoardFollowByFromAndTo(currentUser, storedBoard);
+		followOptional.orElseThrow(() -> {
+			throw new FollowNotFoundException("User " + currentUser.getUsername() + " is not following board \"" + storedBoard.getName() + "\"");
+		});
+		UserBoardFollow userBoardFollow = followOptional.get();
 		userBoardFollowRepository.delete(userBoardFollow);
 	}
 }
