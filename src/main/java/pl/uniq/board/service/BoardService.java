@@ -9,7 +9,7 @@ import pl.uniq.auth.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.repository.BoardRepository;
-import pl.uniq.follow.repository.UserBoardFollowRepository;
+import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
 import java.util.List;
@@ -20,29 +20,36 @@ import java.util.stream.Collectors;
 public class BoardService {
 
 	private final BoardRepository boardRepository;
-	private final UserBoardFollowRepository userBoardFollowRepository;
 
 	@Autowired
-	public BoardService(BoardRepository boardRepository, UserBoardFollowRepository userBoardFollowRepository) {
+	public BoardService(BoardRepository boardRepository) {
 		this.boardRepository = boardRepository;
-		this.userBoardFollowRepository = userBoardFollowRepository;
 	}
 
-	public Page<BoardDto> findAll(Pageable page, User user) {
+	public Page<BoardDto> getAllBoards(Pageable page, User user) {
 		List<BoardDto> boards = boardRepository.findAllByUserId(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
-	public Page<BoardDto> findAllFollowed(Pageable page, User user) {
+	public Page<BoardDto> getAllFollowed(Pageable page, User user) {
 		List<BoardDto> boards = boardRepository.findPublicBoardsByFollower(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
-	public BoardDto findBoardById(UUID uuid, User user) throws ResourceNotFoundException {
-		return BoardDto.create(boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId()));
+	public BoardDto getBoardById(UUID uuid, User user) throws ResourceNotFoundException {
+		Board board = boardRepository.findBoardByBoardId(uuid);
+		if (!board.getIsPrivate()) {
+			return BoardDto.create(board);
+		} else {
+			if (board.getUserId().equals(user.getUserId())) {
+				return BoardDto.create(board);
+			} else {
+				throw new AuthorizationException("You do not have access to this resource");
+			}
+		}
 	}
 
-	public BoardDto save(Board board, User user) {
+	public BoardDto saveBoard(Board board, User user) {
 		board.setUserId(user.getUserId());
 		boardRepository.save(board);
 		return BoardDto.create(board);
@@ -66,7 +73,7 @@ public class BoardService {
 		return BoardDto.create(storedBoard);
 	}
 
-	public void delete(UUID uuid, User user) {
+	public void deleteBoard(UUID uuid, User user) {
 		Board storedBoard = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
 		boardRepository.delete(storedBoard);
 	}

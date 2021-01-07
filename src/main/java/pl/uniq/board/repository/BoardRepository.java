@@ -19,5 +19,7 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
 
 	Board findBoardByBoardIdAndUserId(UUID boardId, UUID userId);
 
+	Board findBoardByBoardId(UUID uuid);
+
 	Optional<Board> findBoardByBoardIdAndIsPrivate(UUID boardId, Boolean isPrivate);
 }
