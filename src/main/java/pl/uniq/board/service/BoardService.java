@@ -42,7 +42,11 @@ public class BoardService {
 		if (!query.isBlank()) {
 			query = "%" + query + "%";
 			List<BoardDto> boards = boardRepository.findAllSearched(query).stream().map(BoardDto::create).collect(Collectors.toList());
-			return new PageImpl<>(boards, page, boards.size());
+			if (boards.size() != 0) {
+				return new PageImpl<>(boards, page, boards.size());
+			} else {
+				throw new ResourceNotFoundException("There is no matching boards for " + query);
+			}
 		} else {
 			return new PageImpl<>(List.of(), page, 0);
 		}

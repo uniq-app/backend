@@ -53,7 +53,11 @@ public class BoardController {
 
 	@GetMapping(value = "/search")
 	public Page<BoardDto> getAllByKey(Pageable page, @RequestParam String q) {
-		return boardService.getAllSearched(page, q);
+		try {
+			return boardService.getAllSearched(page, q);
+		} catch (ResourceNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+		}
 	}
 
 	@GetMapping(value = "/{uuid}")
