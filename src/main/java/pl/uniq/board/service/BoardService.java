@@ -40,7 +40,7 @@ public class BoardService {
 
 	public Page<BoardDto> getAllSearched(Pageable page, String query) {
 		if (!query.isBlank()) {
-			query = "%" + query + "%";
+			query = "%" + query.toLowerCase() + "%";
 			List<BoardDto> boards = boardRepository.findAllSearched(query).stream().map(BoardDto::create).collect(Collectors.toList());
 			if (boards.size() != 0) {
 				return new PageImpl<>(boards, page, boards.size());
