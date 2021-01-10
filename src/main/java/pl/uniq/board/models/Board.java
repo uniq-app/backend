@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.uniq.auth.user.User;
 import pl.uniq.follow.model.UserBoardFollow;
 
 import javax.persistence.*;
@@ -25,11 +26,8 @@ public class Board {
 	@GeneratedValue
 	private UUID boardId;
 
-	@Column(name = "user_id")
-	private UUID userId;
-
-	@Column(name = "user_name")
-	private String username;
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+	private User user;
 
 	@Column(name = "name")
 	private String name;
