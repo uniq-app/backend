@@ -28,6 +28,9 @@ public class Board {
 	@Column(name = "user_id")
 	private UUID userId;
 
+	@Column(name = "user_name")
+	private String username;
+
 	@Column(name = "name")
 	private String name;
 
