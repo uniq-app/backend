@@ -32,7 +32,7 @@ public class BoardDto {
 		return builder().
 				boardId(board.getBoardId()).
 				name(board.getName()).
-				creatorName(board.getUsername()).
+				creatorName(board.getUser().getUsername()).
 				description(board.getDescription()).
 				isPrivate(board.getIsPrivate()).
 				timestamp(board.getTimestamp()).

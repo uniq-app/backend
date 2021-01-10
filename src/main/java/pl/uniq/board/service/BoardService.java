@@ -12,7 +12,6 @@ import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class BoardService {
 	}
 
 	public Page<BoardDto> getAllBoards(Pageable page, User user) {
-		List<BoardDto> boards = boardRepository.findAllByUserIdOrderByTimestampAsc(user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
+		List<BoardDto> boards = boardRepository.findAllByUserOrderByTimestampAsc(user).stream().map(BoardDto::create).collect(Collectors.toList());
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
@@ -59,7 +58,7 @@ public class BoardService {
 			if (!board.getIsPrivate()) {
 				return BoardDto.create(board);
 			} else {
-				if (board.getUserId().equals(user.getUserId())) {
+				if (board.getUser().getUserId().equals(user.getUserId())) {
 					return BoardDto.create(board);
 				} else {
 					throw new AuthorizationException("You do not have access to this resource");
@@ -71,21 +70,20 @@ public class BoardService {
 	}
 
 	public BoardDto saveBoard(Board board, User user) {
-		board.setUserId(user.getUserId());
+		board.setUser(user);
+//		board.setUserId(user.getUserId());
 		boardRepository.save(board);
 		return BoardDto.create(board);
 	}
 
 	public BoardDto updateBoard(UUID uuid, Board board, User user) {
-		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUser(uuid, user);
 		if (boardOptional.isPresent()) {
 			Board storedBoard = boardOptional.get();
 			if (board.getName() != null)
 				storedBoard.setName(board.getName());
 			if (board.getDescription() != null)
 				storedBoard.setDescription(board.getDescription());
-			if (board.getUserId() != null)
-				storedBoard.setUserId(board.getUserId());
 			if (board.getIsPrivate() != null)
 				storedBoard.setIsPrivate(board.getIsPrivate());
 			if (board.getExtraData() != null)
@@ -101,7 +99,7 @@ public class BoardService {
 	}
 
 	public void deleteBoard(UUID uuid, User user) {
-		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUserId(uuid, user.getUserId());
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndUser(uuid, user);
 		if (boardOptional.isPresent()) {
 			boardRepository.delete(boardOptional.get());
 		} else {
