@@ -1,6 +1,5 @@
 package pl.uniq.auth.user;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,10 +12,13 @@ import pl.uniq.auth.security.jwt.JwtTokenService;
 import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
+import pl.uniq.auth.user.dto.ResetPasswordDto;
+import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
 import pl.uniq.utils.Message;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -73,8 +75,9 @@ public class UserService {
 
 	public Message activateAccount(int codeValue) {
 		Code code = codeService.getCodeByValue(codeValue);
-		User user = userRepository.findUserByUserId(code.getUserId());
-		if (codeService.validToken(code)) {
+		Optional<User> userOptional = userRepository.findUserByUserId(code.getUserId());
+		if (codeService.validToken(code) && userOptional.isPresent()) {
+			User user = userOptional.get();
 			user.setActive(true);
 			userRepository.save(user);
 			codeService.deleteCode(code);
@@ -85,8 +88,9 @@ public class UserService {
 	}
 
 	public Message resendActivationCode(String email) {
-		User user = userRepository.findUserByEmail(email);
-		if (user != null) {
+		Optional<User> userOptional = userRepository.findUserByEmail(email);
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
 			Code code = codeService.getCodeByUser(user);
 			codeService.deleteCode(code);
 			codeService.generateCode(user.getUserId());
@@ -107,22 +111,41 @@ public class UserService {
 		return new Message("Activation code has been send on your previous email");
 	}
 
-	public Message forgotPassword(String email) {
-		User user = userRepository.findUserByEmail(email);
-		if (user != null) {
-			if (user.isActive()) {
-				RandomStringGenerator generator = new RandomStringGenerator.Builder().
-						withinRange(48, 122).build();
-				String password = generator.generate(20).replaceAll("[^a-zA-Z0-9]", "");
-				user.setPassword(passwordEncoder.encode(password));
-				userRepository.save(user);
-				EmailManager.sendEmail(email, "Reset password", "There is your temporary password: " + password + ". Login and change password.");
-				return new Message("Email has been sent, check your email");
-			} else {
-				throw new UserOperationException("Your email is not confirmed, we cannot reset your password");
-			}
-		} else {
-			throw new UserOperationException("User with given email does not exist");
+	public Message sendCodeToResetPassword(String email) {
+		Optional<User> userOptional = userRepository.findUserByEmail(email);
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			Code code = codeService.generateCode(user.getUserId());
+			EmailManager.sendEmail(email, "Activation mail", "Activate your UNIQ account using this code: " + code.getValue());
+			return new Message("The email with recovery code has been sent on your email");
 		}
+		return new Message("The email with recovery code has been sent on your email");
 	}
+
+	public Message validCode(int codeValue) {
+		Code code = codeService.getCodeByValue(codeValue);
+		Optional<User> userOptional = userRepository.findUserByUserId(code.getUserId());
+		if (codeService.validToken(code))
+		{
+			if (userOptional.isPresent()) {
+				codeService.deleteCode(code);
+				return new Message("Code is correct");
+			}
+			throw new UserOperationException("Code is incorrect");
+		}
+		throw new CodeException("Code is expired");
+	}
+
+	public Message resetPassword(ResetPasswordDto resetPasswordDto) {
+		Optional<User> userOptional = userRepository.findUserByEmail(resetPasswordDto.getEmail());
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			user.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
+			userRepository.save(user);
+			return new Message("Your password has been reset successfully");
+		}
+		return new Message("Cannot find user with given email. Check email");
+	}
+
+
 }

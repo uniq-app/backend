@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.auth.user.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -24,9 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return new CustomUserDetails(user);
 	}
 
-	public CustomUserDetails loadUserByEmail(String email)
-	{
-		User user = userRepository.findUserByEmail(email);
-		return new CustomUserDetails(user);
+	public CustomUserDetails loadUserByEmail(String email) {
+		Optional<User> userOptional = userRepository.findUserByEmail(email);
+		return new CustomUserDetails(userOptional.get());
 	}
 }
