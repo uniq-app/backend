@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
+import pl.uniq.auth.user.dto.ResetPasswordDto;
 import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
 import pl.uniq.utils.Message;
@@ -67,10 +68,24 @@ public class UserController {
 	@PostMapping(value = "/forgot/{email}")
 	public ResponseEntity<Message> forgotPassword(@PathVariable String email) {
 		try {
-			return new ResponseEntity<>(userService.forgotPassword(email), HttpStatus.OK);
+			return new ResponseEntity<>(userService.sendCodeToResetPassword(email), HttpStatus.OK);
 		} catch (UserOperationException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
+	}
+
+	@PostMapping(value = "/valid/{codeValue}")
+	public ResponseEntity<Message> validCode(@PathVariable int codeValue) {
+		try {
+			return new ResponseEntity<>(userService.validCode(codeValue), HttpStatus.OK);
+		} catch (UserOperationException | CodeException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
+	}
+
+	@PutMapping(value = "/reset")
+	public ResponseEntity<Message> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+		return new ResponseEntity<>(userService.resetPassword(resetPasswordDto), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/update_email/{email}")
