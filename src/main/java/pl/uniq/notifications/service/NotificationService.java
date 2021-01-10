@@ -18,7 +18,9 @@ public class NotificationService {
 	@Async
 	public void sendNotification(User user, String topic, String body) {
 		String token = user.getFCMToken();
-
+		if (token == null) {
+			return;
+		}
 		Message message = Message.builder().
 			setNotification(Notification.builder()
 					.setTitle(topic)
