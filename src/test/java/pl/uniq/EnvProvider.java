@@ -6,9 +6,13 @@ import java.util.Properties;
 
 public class EnvProvider {
 
-	public static String getEnv(String key) throws IOException {
+	public static String getEnv(String key) {
 		Properties properties = new Properties();
-		properties.load(new FileReader("env.properties"));
+		try {
+			properties.load(new FileReader("env.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return properties.getProperty(key);
 	}
 }
