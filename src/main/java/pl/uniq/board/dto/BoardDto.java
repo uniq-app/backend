@@ -20,6 +20,7 @@ public class BoardDto {
 
 	private UUID boardId;
 	private String name;
+	private String creatorName;
 	private String description;
 	private Boolean isPrivate;
 	private Date timestamp;
@@ -31,6 +32,7 @@ public class BoardDto {
 		return builder().
 				boardId(board.getBoardId()).
 				name(board.getName()).
+				creatorName(board.getUser().getUsername()).
 				description(board.getDescription()).
 				isPrivate(board.getIsPrivate()).
 				timestamp(board.getTimestamp()).

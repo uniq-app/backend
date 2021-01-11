@@ -9,5 +9,6 @@ FROM openjdk:13-jdk-alpine
 
 ARG JAR_FILE=target/*.jar
 COPY --from=MAVEN_BUILD ${JAR_FILE} app.jar
+COPY ./firebase.json ./firebase.json
 
 CMD ["java","-jar","/app.jar"]

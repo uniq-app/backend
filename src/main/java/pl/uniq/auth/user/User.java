@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import pl.uniq.board.models.Board;
 import pl.uniq.follow.model.UserBoardFollow;
 
 import javax.persistence.*;
@@ -32,6 +33,9 @@ public class User {
 
 	@Column(name = "password", nullable = false)
 	private String password;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<Board> boards;
 
 	@Lob
 	@Column(name = "bio")

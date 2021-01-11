@@ -21,6 +21,7 @@
       <env name="POSTGRES_PASSWORD" value="admin" />
       <env name="EMAIL_ACCOUNT" value="uniq.app.auth@gmail.com" />
       <env name="EMAIL_PASSWORD" value="bezhasla1" />
+      <env name="FIREBASE_CREDENTIALS_PATH" value="firebase.json" />
     </envs>
     <method v="2">
       <option name="Make" enabled="true" />
