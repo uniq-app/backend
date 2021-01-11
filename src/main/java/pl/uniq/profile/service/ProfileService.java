@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.auth.user.UserRepository;
-import pl.uniq.auth.user.dto.UserDto;
+import pl.uniq.profile.dto.ProfileDto;
 
 @Service
 public class ProfileService {
@@ -15,10 +15,13 @@ public class ProfileService {
 		this.userRepository = userRepository;
 	}
 
-	public User update(User currentUser, UserDto requestBodyUser) {
-		if (requestBodyUser.getUsername() != null) currentUser.setUsername(requestBodyUser.getUsername());
-		if (requestBodyUser.getBio() != null) currentUser.setBio(requestBodyUser.getBio());
-		if (requestBodyUser.getAvatar() != null) currentUser.setAvatar(requestBodyUser.getAvatar());
+	public User update(User currentUser, ProfileDto requestBodyUser) {
+		if (requestBodyUser.getUsername() != null)
+			currentUser.setUsername(requestBodyUser.getUsername());
+		if (requestBodyUser.getBio() != null)
+			currentUser.setBio(requestBodyUser.getBio());
+		if (requestBodyUser.getAvatar() != null)
+			currentUser.setAvatar(requestBodyUser.getAvatar());
 		userRepository.save(currentUser);
 		return currentUser;
 	}
