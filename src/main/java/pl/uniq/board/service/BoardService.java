@@ -119,7 +119,7 @@ public class BoardService {
 		return boardOptional.get();
 	}
 
-	public void notifyFollowers(UUID boardId, Integer photoCount) {
+	public void notifyFollowersAboutNewPhotos(UUID boardId, Integer photoCount) {
 		Optional<Board> boardOptional = boardRepository.findBoardByBoardId(boardId);
 		if (boardOptional.isPresent()) {
 			Board board = boardOptional.get();
