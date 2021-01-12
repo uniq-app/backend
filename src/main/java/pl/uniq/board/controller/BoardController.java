@@ -16,6 +16,7 @@ import pl.uniq.exceptions.FollowAlreadyExistsException;
 import pl.uniq.exceptions.FollowNotFoundException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.follow.service.UserBoardFollowService;
+import pl.uniq.photo.dto.PhotoDto;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.service.PhotoService;
 import pl.uniq.utils.Message;
@@ -101,13 +102,13 @@ public class BoardController {
 	}
 
 	@PutMapping(value = "/{uuid}/photos")
-	public ResponseEntity<List<Photo>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
+	public ResponseEntity<List<Photo>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
 		return new ResponseEntity<>(photoService.save(photos, uuid), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{uuid}/photos")
-	public ResponseEntity<Message> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
-		photoService.delete(photos, uuid);
+	public ResponseEntity<Message> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
+		photoService.delete(photos);
 		return new ResponseEntity<>(new Message("Removed"), HttpStatus.OK);
 	}
 
