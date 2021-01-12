@@ -5,13 +5,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.uniq.auth.code.Code;
+import pl.uniq.auth.code.CodeDto;
 import pl.uniq.auth.code.CodeService;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.security.email.EmailManager;
 import pl.uniq.auth.security.jwt.JwtTokenService;
 import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
+import pl.uniq.auth.user.dto.ChangeEmailDto;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
+import pl.uniq.auth.user.dto.EmailDto;
 import pl.uniq.auth.user.dto.ResetPasswordDto;
 import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
@@ -41,19 +44,19 @@ public class UserService {
 	}
 
 	@Transactional
-	public AuthenticationResponse updateUsername(String authHeader, User user, String newUsername) {
-		if (!userRepository.existsByUsername(newUsername)) {
-			user.setUsername(newUsername);
-			userRepository.save(user);
+	public AuthenticationResponse updateUsername(String authHeader, User currentUser, User user) {
+		if (!userRepository.existsByUsername(user.getUsername())) {
+			currentUser.setUsername(user.getUsername());
+			userRepository.save(currentUser);
 
 			String token = jwtUtil.parseHeader(authHeader);
 			jwtTokenService.deleteToken(token);
-			UserDetails userDetails = customUserDetailsService.loadUserByUsername(newUsername);
+			UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getUsername());
 			String newToken = jwtUtil.generateToken(userDetails);
 			jwtTokenService.addToken(newToken);
 			return new AuthenticationResponse(newToken);
 		}
-		throw new UserOperationException(newUsername + " is used by other user");
+		throw new UserOperationException(user.getUsername() + " is used by other user");
 	}
 
 	public Message updatePassword(User user, ChangePasswordDto changePasswordDto) {
@@ -73,8 +76,8 @@ public class UserService {
 		return new Message("Password has been updated");
 	}
 
-	public Message activateAccount(int codeValue) {
-		Code code = codeService.getCodeByValue(codeValue);
+	public Message activateAccount(CodeDto codeDto) {
+		Code code = codeService.getCodeByValue(codeDto.getCodeValue());
 		Optional<User> userOptional = userRepository.findUserByUserId(code.getUserId());
 		if (codeService.validToken(code) && userOptional.isPresent()) {
 			User user = userOptional.get();
@@ -87,46 +90,56 @@ public class UserService {
 		}
 	}
 
-	public Message resendActivationCode(String email) {
-		Optional<User> userOptional = userRepository.findUserByEmail(email);
+	public Message resendActivationCode(EmailDto emailDto) {
+		Optional<User> userOptional = userRepository.findUserByEmail(emailDto.getEmail());
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			Code code = codeService.getCodeByUser(user);
-			codeService.deleteCode(code);
-			codeService.generateCode(user.getUserId());
-			EmailManager.sendEmail(user.getEmail(), "Activation mail", "Activate your UNIQ account using this code: " + code.getValue());
+			if (code != null)
+			{
+				codeService.deleteCode(code);
+			}
+			Code newCode = codeService.generateCode(user.getUserId());
+			EmailManager.sendEmail(user.getEmail(), "Activation mail", "Activate your UNIQ account using this code: " + newCode.getValue());
 			return new Message("Activation code has been send on your email");
 		} else {
 			throw new UserOperationException("Cannot find user with given email");
 		}
 	}
 
-	public Message updateEmail(User user, String newEmail) {
-		String oldEmail = user.getEmail();
-		user.setEmail(newEmail);
-		user.setActive(false);
-		userRepository.save(user);
+	public Message sendCodeToChangeEmail(User user)
+	{
 		Code code = codeService.generateCode(user.getUserId());
-		EmailManager.sendEmail(oldEmail, "Activation mail", "Activate your UNIQ account using this code: " + code.getValue());
-		return new Message("Activation code has been send on your previous email");
+		EmailManager.sendEmail(user.getEmail(), "Change mail code", "Change your email in UNIQ account using this code: " + code.getValue());
+		return new Message("Code to change your email has been sent on your email");
 	}
 
-	public Message sendCodeToResetPassword(String email) {
-		Optional<User> userOptional = userRepository.findUserByEmail(email);
+	public Message updateEmail(User user, ChangeEmailDto changeEmailDto) {
+		Code code = codeService.getCodeByValue(changeEmailDto.getCodeValue());
+		if (codeService.validToken(code)) {
+			user.setEmail(changeEmailDto.getNewEmail());
+			userRepository.save(user);
+			codeService.deleteCode(code);
+			return new Message("Your email has been updated");
+		}
+		throw new CodeException("Code is expired");
+	}
+
+	public Message sendCodeToResetPassword(EmailDto email) {
+		Optional<User> userOptional = userRepository.findUserByEmail(email.getEmail());
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			Code code = codeService.generateCode(user.getUserId());
-			EmailManager.sendEmail(email, "Activation mail", "Activate your UNIQ account using this code: " + code.getValue());
+			EmailManager.sendEmail(email.getEmail(), "Activation mail", "Activate your UNIQ account using this code: " + code.getValue());
 			return new Message("The email with recovery code has been sent on your email");
 		}
 		return new Message("The email with recovery code has been sent on your email");
 	}
 
-	public Message validCode(int codeValue) {
-		Code code = codeService.getCodeByValue(codeValue);
+	public Message validCode(CodeDto codeDto) {
+		Code code = codeService.getCodeByValue(codeDto.getCodeValue());
 		Optional<User> userOptional = userRepository.findUserByUserId(code.getUserId());
-		if (codeService.validToken(code))
-		{
+		if (codeService.validToken(code)) {
 			if (userOptional.isPresent()) {
 				codeService.deleteCode(code);
 				return new Message("Code is correct");
@@ -146,6 +159,4 @@ public class UserService {
 		}
 		return new Message("Cannot find user with given email. Check email");
 	}
-
-
 }

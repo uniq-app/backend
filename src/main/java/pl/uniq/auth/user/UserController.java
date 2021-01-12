@@ -1,13 +1,17 @@
 package pl.uniq.auth.user;
 
+import antlr.debug.MessageAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pl.uniq.auth.code.CodeDto;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
+import pl.uniq.auth.user.dto.ChangeEmailDto;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
+import pl.uniq.auth.user.dto.EmailDto;
 import pl.uniq.auth.user.dto.ResetPasswordDto;
 import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
@@ -26,10 +30,10 @@ public class UserController {
 		this.authorizationService = authorizationService;
 	}
 
-	@PutMapping(value = "/update/{username}")
-	public ResponseEntity<AuthenticationResponse> updateUsername(@RequestHeader("Authorization") String authHeader, @PathVariable String username) {
+	@PutMapping(value = "/update")
+	public ResponseEntity<AuthenticationResponse> updateUsername(@RequestHeader("Authorization") String authHeader, @RequestBody User user) {
 		try {
-			AuthenticationResponse response = userService.updateUsername(authHeader, authorizationService.getCurrentUser(), username);
+			AuthenticationResponse response = userService.updateUsername(authHeader, authorizationService.getCurrentUser(), user);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (UserOperationException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -45,28 +49,28 @@ public class UserController {
 		}
 	}
 
-	@PutMapping(value = "/activation/{codeValue}")
-	public ResponseEntity<Message> activateAccount(@PathVariable int codeValue) {
+	@PutMapping(value = "/activation")
+	public ResponseEntity<Message> activateAccount(@RequestBody CodeDto codeDto) {
 		try {
-			Message message = userService.activateAccount(codeValue);
+			Message message = userService.activateAccount(codeDto);
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		} catch (UserOperationException | CodeException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
-	@PostMapping(value = "/resend/{email}")
-	public ResponseEntity<Message> resendCode(@PathVariable String email) {
+	@PostMapping(value = "/resend")
+	public ResponseEntity<Message> resendCode(@RequestBody EmailDto emailDto) {
 		try {
-			Message message = userService.resendActivationCode(email);
+			Message message = userService.resendActivationCode(emailDto);
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		} catch (UserOperationException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
-	@PostMapping(value = "/forgot/{email}")
-	public ResponseEntity<Message> forgotPassword(@PathVariable String email) {
+	@PostMapping(value = "/forgot")
+	public ResponseEntity<Message> forgotPassword(@RequestBody EmailDto email) {
 		try {
 			return new ResponseEntity<>(userService.sendCodeToResetPassword(email), HttpStatus.OK);
 		} catch (UserOperationException e) {
@@ -74,10 +78,10 @@ public class UserController {
 		}
 	}
 
-	@PostMapping(value = "/valid/{codeValue}")
-	public ResponseEntity<Message> validCode(@PathVariable int codeValue) {
+	@PostMapping(value = "/valid")
+	public ResponseEntity<Message> validCode(@RequestBody CodeDto codeDto) {
 		try {
-			return new ResponseEntity<>(userService.validCode(codeValue), HttpStatus.OK);
+			return new ResponseEntity<>(userService.validCode(codeDto), HttpStatus.OK);
 		} catch (UserOperationException | CodeException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
@@ -88,8 +92,13 @@ public class UserController {
 		return new ResponseEntity<>(userService.resetPassword(resetPasswordDto), HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/update_email/{email}")
-	public ResponseEntity<Message> updateEmail(@PathVariable String email) {
-		return new ResponseEntity<>(userService.updateEmail(authorizationService.getCurrentUser(), email), HttpStatus.OK);
+	@PostMapping(value = "/code_email")
+	ResponseEntity<Message> getCode() {
+		return new ResponseEntity<>(userService.sendCodeToChangeEmail(authorizationService.getCurrentUser()), HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/update_email")
+	public ResponseEntity<Message> updateEmail(@RequestBody ChangeEmailDto changeEmailDto) {
+		return new ResponseEntity<>(userService.updateEmail(authorizationService.getCurrentUser(), changeEmailDto), HttpStatus.OK);
 	}
 }
