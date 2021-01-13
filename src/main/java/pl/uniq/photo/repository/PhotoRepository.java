@@ -2,6 +2,7 @@ package pl.uniq.photo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import pl.uniq.board.models.Board;
 import pl.uniq.photo.models.Photo;
 
 import java.util.List;
@@ -11,11 +12,9 @@ import java.util.UUID;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, UUID> {
 
-	List<Photo> findAllByBoardId(UUID boardID);
+	List<Photo> findAllByBoard(Board board);
 
-	Integer countPhotoByBoardId(UUID boardID);
+	Integer countPhotoByBoard(Board board);
 
 	Optional<Photo> findPhotoByPhotoId(UUID photoId);
-
-	Optional<Photo> findByValueAndBoardId(String value, UUID boardID);
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.uniq.board.models.Board;
 import pl.uniq.photo.models.Photo;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class PhotoDto {
 
 	public PhotoDto(Photo photo) {
 		this.photoId = photo.getPhotoId();
-		this.boardId = photo.getBoardId();
+		this.boardId = photo.getBoard().getBoardId();
 		this.value = photo.getValue();
 		this.order = photo.getOrder();
 		this.extraData = photo.getExtraData();

@@ -111,6 +111,14 @@ public class BoardService {
 		}
 	}
 
+	public Board findBoardByBoardId(UUID uuid) {
+		Optional<Board> boardOptional = boardRepository.findBoardByBoardId(uuid);
+		boardOptional.orElseThrow(() -> {
+			throw new ResourceNotFoundException("Board with id: " + uuid.toString() + " not found.");
+		});
+		return boardOptional.get();
+	}
+
 	public Board findBoardByBoardIdAndIsPrivate(UUID uuid) {
 		Optional<Board> boardOptional = boardRepository.findBoardByBoardIdAndIsPrivate(uuid, false);
 		boardOptional.orElseThrow(() -> {
