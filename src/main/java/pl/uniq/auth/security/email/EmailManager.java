@@ -2,7 +2,6 @@ package pl.uniq.auth.security.email;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -16,20 +15,11 @@ public class EmailManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailManager.class);
 
-	@Value("${EMAIL_NAME}")
-	static String name;
-
-	@Value("${EMAIL_ACCOUNT}")
-	static String account;
-
-	@Value("${EMAIL_PASSWORD}")
-	static String password;
-
-	@Value("${EMAIL_HOST}")
-	static String host;
-
-	@Value("${EMAIL_PORT}")
-	static String port;
+	private static final String name = System.getenv("EMAIL_NAME");
+	private static final String account = System.getenv("EMAIL_ACCOUNT");
+	private static final String password = System.getenv("EMAIL_PASSWORD");
+	private static final String host = System.getenv("EMAIL_HOST");
+	private static final String port = System.getenv("EMAIL_PORT");
 
 
 	public static void sendEmail(String recipient, String subject, String text) {
@@ -46,7 +36,7 @@ public class EmailManager {
 			}
 		});
 
-		Message message = prepareMessage(session, account, recipient, subject, text);
+		Message message = prepareMessage(session, recipient, subject, text);
 		if (message != null) {
 			try {
 				Transport.send(message);
@@ -56,10 +46,10 @@ public class EmailManager {
 		}
 	}
 
-	private static Message prepareMessage(Session session, String myAccountEmail, String recipient, String subject, String text) {
+	private static Message prepareMessage(Session session, String recipient, String subject, String text) {
 		try {
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(myAccountEmail, name));
+			message.setFrom(new InternetAddress(account, name));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject(subject);
 			message.setText(text);
