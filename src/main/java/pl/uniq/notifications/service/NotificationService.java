@@ -41,6 +41,10 @@ public class NotificationService {
 	public void sendBatchNotification(List<User> users, String title, String body) {
 		List<String> tokens = users.stream().map(User::getFCMToken).filter(Objects::nonNull).collect(Collectors.toList());
 
+		if (tokens.size() == 0 ) {
+			return;
+		}
+
 		MulticastMessage message = MulticastMessage.builder().
 				setNotification(Notification.builder().setTitle(title).setBody(body).build()).
 				addAllTokens(tokens).

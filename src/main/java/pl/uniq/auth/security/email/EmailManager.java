@@ -2,12 +2,12 @@ package pl.uniq.auth.security.email;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 @Component
@@ -15,18 +15,19 @@ public class EmailManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailManager.class);
 
-	//@Value("${EMAIL_ACCOUNT}")
-	private static final String account = "uniq.app.auth@gmail.com";
+	private static final String name = System.getenv("EMAIL_NAME");
+	private static final String account = System.getenv("EMAIL_ACCOUNT");
+	private static final String password = System.getenv("EMAIL_PASSWORD");
+	private static final String host = System.getenv("EMAIL_HOST");
+	private static final String port = System.getenv("EMAIL_PORT");
 
-	//@Value("${EMAIL_PASSWORD}")
-	private static final String password = "bezhasla1";
 
 	public static void sendEmail(String recipient, String subject, String text) {
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.port", "587");
+		properties.put("mail.smtp.host", host);
+		properties.put("mail.smtp.port", port);
 
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -35,7 +36,7 @@ public class EmailManager {
 			}
 		});
 
-		Message message = prepareMessage(session, account, recipient, subject, text);
+		Message message = prepareMessage(session, recipient, subject, text);
 		if (message != null) {
 			try {
 				Transport.send(message);
@@ -45,15 +46,15 @@ public class EmailManager {
 		}
 	}
 
-	private static Message prepareMessage(Session session, String myAccountEmail, String recipient, String subject, String text) {
+	private static Message prepareMessage(Session session, String recipient, String subject, String text) {
 		try {
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(myAccountEmail));
+			message.setFrom(new InternetAddress(account, name));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject(subject);
 			message.setText(text);
 			return message;
-		} catch (MessagingException e) {
+		} catch (MessagingException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return null;
