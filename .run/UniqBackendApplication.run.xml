@@ -21,6 +21,9 @@
       <env name="EMAIL_ACCOUNT" value="uniq.app.auth@gmail.com" />
       <env name="EMAIL_PASSWORD" value="bezhasla1" />
       <env name="FIREBASE_CREDENTIALS_PATH" value="firebase.json" />
+      <env name="EMAIL_NAME" value="local" />
+      <env name="EMAIL_HOST" value="smtp.gmail.com" />
+      <env name="EMAIL_PORT" value="587" />
     </envs>
     <method v="2">
       <option name="Make" enabled="true" />
