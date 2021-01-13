@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 @Component
 public class EmailManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailManager.class);
+
+	@Value("${EMAIL_NAME}")
+	static String name;
 
 	@Value("${EMAIL_ACCOUNT}")
 	static String account;
@@ -55,12 +59,12 @@ public class EmailManager {
 	private static Message prepareMessage(Session session, String myAccountEmail, String recipient, String subject, String text) {
 		try {
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(myAccountEmail));
+			message.setFrom(new InternetAddress(myAccountEmail, name));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject(subject);
 			message.setText(text);
 			return message;
-		} catch (MessagingException e) {
+		} catch (MessagingException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return null;
