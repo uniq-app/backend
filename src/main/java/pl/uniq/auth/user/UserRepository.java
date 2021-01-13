@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 	@Modifying
 	@Query(value = "UPDATE uniq_user SET fcm_token = null WHERE username = ?1", nativeQuery = true)
 	void removeFCMTokenByUsername(String username);
+
+	@Modifying
+	@Query(value = "UPDATE uniq_user SET fcm_token = null WHERE user_id = ?1", nativeQuery = true)
+	void removeFCMTokenByUserId(UUID userId);
 }
