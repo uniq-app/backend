@@ -15,11 +15,11 @@ public class EmailManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailManager.class);
 
-	//@Value("${EMAIL_ACCOUNT}")
-	private static final String account = "uniq.app.auth@gmail.com";
+	@Value("${EMAIL_ACCOUNT}")
+	static String account;
 
-	//@Value("${EMAIL_PASSWORD}")
-	private static final String password = "bezhasla1";
+	@Value("${EMAIL_PASSWORD}")
+	static String password;
 
 	public static void sendEmail(String recipient, String subject, String text) {
 		Properties properties = new Properties();
