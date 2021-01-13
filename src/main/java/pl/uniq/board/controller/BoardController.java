@@ -47,6 +47,11 @@ public class BoardController {
 		return boardService.getAllBoards(page, authorizationService.getCurrentUser());
 	}
 
+	@PostMapping
+	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
+		return new ResponseEntity<>(boardService.saveBoard(board, authorizationService.getCurrentUser()), HttpStatus.OK);
+	}
+
 	@GetMapping(value = "/followed")
 	public Page<BoardDto> getAllFollowed(Pageable page) {
 		return boardService.getAllFollowed(page, authorizationService.getCurrentUser());
@@ -72,11 +77,6 @@ public class BoardController {
 		}
 	}
 
-	@PostMapping(value = "/")
-	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
-		return new ResponseEntity<>(boardService.saveBoard(board, authorizationService.getCurrentUser()), HttpStatus.OK);
-	}
-
 	@PutMapping(value = "/{uuid}")
 	public ResponseEntity<BoardDto> updateBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody Board board) {
 		try {
@@ -97,12 +97,12 @@ public class BoardController {
 	}
 
 	@GetMapping(value = "/{uuid}/photos")
-	public ResponseEntity<List<Photo>> getPhotosByBoard(@PathVariable(value = "uuid") UUID uuid) {
+	public ResponseEntity<List<PhotoDto>> getPhotosByBoard(@PathVariable(value = "uuid") UUID uuid) {
 		return new ResponseEntity<>(photoService.findAllByBoard(uuid), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}/photos")
-	public ResponseEntity<List<Photo>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
+	public ResponseEntity<List<PhotoDto>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
 		return new ResponseEntity<>(photoService.save(photos, uuid), HttpStatus.OK);
 	}
 

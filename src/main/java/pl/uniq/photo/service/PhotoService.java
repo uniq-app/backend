@@ -2,6 +2,7 @@ package pl.uniq.photo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.photo.dto.PhotoDto;
@@ -9,6 +10,7 @@ import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.repository.PhotoRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PhotoService {
@@ -23,13 +25,16 @@ public class PhotoService {
 	}
 
 
-	public List<Photo> findAllByBoard(UUID boardId) throws ResourceNotFoundException {
-		return photoRepository.findAllByBoardId(boardId);
+	public List<PhotoDto> findAllByBoard(UUID boardId) throws ResourceNotFoundException {
+		return photoRepository.findAllByBoard(boardService.findBoardByBoardId(boardId))
+				.stream()
+				.map(PhotoDto::new)
+				.collect(Collectors.toList());
 	}
 
-	public List<Photo> save(List<PhotoDto> photoDtos, UUID boardId) {
+	public List<PhotoDto> save(List<PhotoDto> photoDtos, UUID boardId) {
 		int newPhotos = 0;
-		List<Photo> photos = new LinkedList<>();
+		List<PhotoDto> photos = new LinkedList<>();
 		for (PhotoDto photoDto : photoDtos) {
 			Optional<Photo> photoOptional = photoRepository.findPhotoByPhotoId(photoDto.getPhotoId());
 			Photo photo;
@@ -42,14 +47,15 @@ public class PhotoService {
 					photo.setExtraData(photoDto.getExtraData());
 				}
 			} else {
-				photoDto.setBoardId(boardId);
-				int order = photoRepository.countPhotoByBoardId(boardId);
-				photo = Photo.create(photoDto);
-				photo.setOrder(order+1);
+				Board board = boardService.findBoardByBoardId(boardId);
+				photoDto.setBoardId(board.getBoardId());
+				int order = photoRepository.countPhotoByBoard(board);
+				photo = Photo.create(photoDto, board);
+				photo.setOrder(order + 1);
 				newPhotos++;
 			}
 			photoRepository.save(photo);
-			photos.add(photo);
+			photos.add(new PhotoDto(photo));
 		}
 		if (newPhotos > 0) {
 			boardService.notifyFollowersAboutNewPhotos(boardId, newPhotos);

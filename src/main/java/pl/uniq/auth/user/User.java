@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import pl.uniq.board.models.Board;
 import pl.uniq.follow.model.UserBoardFollow;
@@ -34,7 +36,7 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Board> boards;
 
 	@Lob
@@ -47,6 +49,8 @@ public class User {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
+	@OnDelete(action= OnDeleteAction.CASCADE)
+	@JoinColumn
 	private Set<Role> roles;
 
 	@Column(name = "is_active")

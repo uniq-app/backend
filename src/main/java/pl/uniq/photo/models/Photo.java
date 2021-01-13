@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import pl.uniq.board.models.Board;
 import pl.uniq.photo.dto.PhotoDto;
 
 import javax.persistence.*;
@@ -23,8 +24,8 @@ public class Photo {
 	@Column(name = "photo_id")
 	private UUID photoId;
 
-	@Column(name = "board_id")
-	private UUID boardId;
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Board.class)
+	private Board board;
 
 	@Column(name = "value")
 	private String value;
@@ -37,10 +38,9 @@ public class Photo {
 	@Type(type = "org.hibernate.type.TextType")
 	private String extraData;
 
-
-	public static Photo create(PhotoDto photoDto) {
+	public static Photo create(PhotoDto photoDto, Board board) {
 		return builder()
-				.boardId(photoDto.getBoardId())
+				.board(board)
 				.value(photoDto.getValue())
 				.order(photoDto.getOrder())
 				.extraData(photoDto.getExtraData())

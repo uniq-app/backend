@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.uniq.auth.user.User;
 import pl.uniq.board.models.Board;
-import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.board.service.BoardService;
 import pl.uniq.exceptions.FollowAlreadyExistsException;
 import pl.uniq.exceptions.FollowNotFoundException;
