@@ -1,6 +1,8 @@
 package pl.uniq.auth.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,4 +15,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 	Optional<User> findUserByEmail(String email);
 	boolean existsByUsername(String username);
 	boolean existsByEmail(String email);
+
+	@Modifying
+	@Query(value = "UPDATE uniq_user SET fcm_token = null WHERE username = ?1", nativeQuery = true)
+	void removeFCMTokenByUsername(String username);
 }

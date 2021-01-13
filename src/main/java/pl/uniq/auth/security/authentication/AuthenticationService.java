@@ -90,9 +90,7 @@ public class AuthenticationService {
 	@Transactional
 	public Message logout(String authHeader) {
 		String token = jwtUtil.parseHeader(authHeader);
-		User currentUser = userRepository.findByUsername(jwtUtil.extractUsername(token));
-		currentUser.setFCMToken(null);
-		userRepository.save(currentUser);
+		userRepository.removeFCMTokenByUsername(jwtUtil.extractUsername(token));
 		jwtTokenService.deleteToken(token);
 		return new Message("User has been logged out");
 	}
