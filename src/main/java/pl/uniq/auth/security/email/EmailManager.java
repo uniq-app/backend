@@ -21,12 +21,19 @@ public class EmailManager {
 	@Value("${EMAIL_PASSWORD}")
 	static String password;
 
+	@Value("${EMAIL_HOST}")
+	static String host;
+
+	@Value("${EMAIL_PORT}")
+	static String port;
+
+
 	public static void sendEmail(String recipient, String subject, String text) {
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.port", "587");
+		properties.put("mail.smtp.host", host);
+		properties.put("mail.smtp.port", port);
 
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
