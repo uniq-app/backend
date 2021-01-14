@@ -12,7 +12,6 @@ import pl.uniq.auth.security.email.EmailManager;
 import pl.uniq.auth.security.jwt.JwtTokenService;
 import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
-import pl.uniq.auth.user.dto.ChangeEmailDto;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
 import pl.uniq.auth.user.dto.EmailDto;
 import pl.uniq.auth.user.dto.ResetPasswordDto;
