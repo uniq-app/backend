@@ -99,4 +99,9 @@ public class UserController {
 	public ResponseEntity<Message> updateEmail(@RequestBody EmailDto emailDto) {
 		return new ResponseEntity<>(userService.updateEmail(authorizationService.getCurrentUser(), emailDto), HttpStatus.OK);
 	}
+
+	@DeleteMapping(value = "/delete")
+	public ResponseEntity<Message> deleteUser() {
+		return new ResponseEntity<>(userService.deleteUser(authorizationService.getCurrentUser()), HttpStatus.OK);
+	}
 }

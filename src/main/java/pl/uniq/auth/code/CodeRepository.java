@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface CodeRepository extends JpaRepository<Code, UUID> {
 	Code getCodeByValue(int value);
 	Code getCodeByUserId(UUID uuid);
+	void deleteAllByUserId(UUID uuid);
 }
