@@ -26,7 +26,7 @@ public class PhotoService {
 
 
 	public List<PhotoDto> findAllByBoard(UUID boardId) throws ResourceNotFoundException {
-		return photoRepository.findAllByBoard(boardService.findBoardByBoardId(boardId))
+		return photoRepository.findAllByBoardOrderByOrderAsc(boardService.findBoardByBoardId(boardId))
 				.stream()
 				.map(PhotoDto::new)
 				.collect(Collectors.toList());
