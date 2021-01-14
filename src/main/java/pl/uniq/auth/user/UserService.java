@@ -62,7 +62,8 @@ public class UserService {
 	public Message updatePassword(User user, ChangePasswordDto changePasswordDto) {
 		String password = user.getPassword();
 		boolean checkOldPassword = passwordEncoder.matches(changePasswordDto.getOldPassword(), password);
-		boolean checkNewPassword = changePasswordDto.getNewPassword().equals(changePasswordDto.getRepeatedNewPassword());
+		boolean checkNewPassword = changePasswordDto.getNewPassword()
+				.equals(changePasswordDto.getRepeatedNewPassword());
 		if (checkOldPassword) {
 			if (checkNewPassword) {
 				user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
@@ -95,8 +96,7 @@ public class UserService {
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			Code code = codeService.getCodeByUser(user);
-			if (code != null)
-			{
+			if (code != null) {
 				codeService.deleteCode(code);
 			}
 			Code newCode = codeService.generateCode(user.getUserId());
@@ -107,22 +107,16 @@ public class UserService {
 		}
 	}
 
-	public Message sendCodeToChangeEmail(User user)
-	{
+	public Message sendCodeToChangeEmail(User user) {
 		Code code = codeService.generateCode(user.getUserId());
 		EmailManager.sendEmail(user.getEmail(), "Change mail code", "Change your email in UNIQ account using this code: " + code.getValue());
 		return new Message("Code to change your email has been sent on your email");
 	}
 
-	public Message updateEmail(User user, ChangeEmailDto changeEmailDto) {
-		Code code = codeService.getCodeByValue(changeEmailDto.getCodeValue());
-		if (codeService.validToken(code)) {
-			user.setEmail(changeEmailDto.getNewEmail());
-			userRepository.save(user);
-			codeService.deleteCode(code);
-			return new Message("Your email has been updated");
-		}
-		throw new CodeException("Code is expired");
+	public Message updateEmail(User user, EmailDto emailDto) {
+		user.setEmail(emailDto.getEmail());
+		userRepository.save(user);
+		return new Message("Your email has been updated");
 	}
 
 	public Message sendCodeToResetPassword(EmailDto email) {
