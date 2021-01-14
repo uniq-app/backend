@@ -152,4 +152,12 @@ public class UserService {
 		}
 		return new Message("Cannot find user with given email. Check email");
 	}
+
+	@Transactional
+	public Message deleteUser(User user)
+	{
+		codeService.clear(user.getUserId());
+		userRepository.delete(user);
+		return new Message("Your account has been deleted");
+	}
 }
