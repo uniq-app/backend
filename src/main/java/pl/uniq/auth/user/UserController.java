@@ -1,6 +1,5 @@
 package pl.uniq.auth.user;
 
-import antlr.debug.MessageAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.code.CodeDto;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
-import pl.uniq.auth.user.dto.ChangeEmailDto;
 import pl.uniq.auth.user.dto.ChangePasswordDto;
 import pl.uniq.auth.user.dto.EmailDto;
 import pl.uniq.auth.user.dto.ResetPasswordDto;
@@ -98,7 +96,7 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/update_email")
-	public ResponseEntity<Message> updateEmail(@RequestBody ChangeEmailDto changeEmailDto) {
-		return new ResponseEntity<>(userService.updateEmail(authorizationService.getCurrentUser(), changeEmailDto), HttpStatus.OK);
+	public ResponseEntity<Message> updateEmail(@RequestBody EmailDto emailDto) {
+		return new ResponseEntity<>(userService.updateEmail(authorizationService.getCurrentUser(), emailDto), HttpStatus.OK);
 	}
 }
