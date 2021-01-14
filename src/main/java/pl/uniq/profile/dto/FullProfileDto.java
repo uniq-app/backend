@@ -20,6 +20,7 @@ public class FullProfileDto {
 	private String bio;
 	private String avatar;
 	private Set<Role> roles;
+	private boolean isNotificationsEnabled;
 
 	public FullProfileDto(User user) {
 		this.username = user.getUsername();
@@ -27,5 +28,6 @@ public class FullProfileDto {
 		this.bio = user.getBio();
 		this.avatar = user.getAvatar();
 		this.roles = user.getRoles();
+		this.isNotificationsEnabled = user.getFCMToken() != null;
 	}
 }
