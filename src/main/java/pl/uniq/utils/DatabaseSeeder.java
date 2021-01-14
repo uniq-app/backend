@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.user.Role;
 import pl.uniq.auth.user.User;
 import pl.uniq.auth.user.UserRepository;
@@ -30,6 +32,7 @@ public class DatabaseSeeder {
 	final BoardRepository boardRepository;
 	final PhotoRepository photoRepository;
 	final PasswordEncoder passwordEncoder;
+	final String SEED_SECRET = System.getenv("SEED_SECRET");
 
 	@Autowired
 	DatabaseSeeder(UserRepository userRepository, BoardRepository boardRepository, PhotoRepository photoRepository, PasswordEncoder passwordEncoder) {
@@ -146,7 +149,11 @@ public class DatabaseSeeder {
 	}
 
 	@PostMapping(value = "/exec")
-	public ResponseEntity<String> exec() {
-		return new ResponseEntity<>(seed(), HttpStatus.CREATED);
+	public ResponseEntity<String> exec(@RequestHeader("secret") String secret) {
+		if (secret.equals(SEED_SECRET)) {
+			return new ResponseEntity<>(seed(), HttpStatus.CREATED);
+		} else {
+			throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+		}
 	}
 }
