@@ -41,10 +41,10 @@ public class BoardService {
 		return new PageImpl<>(boards, page, boards.size());
 	}
 
-	public Page<BoardDto> getAllSearched(Pageable page, String query) {
+	public Page<BoardDto> getAllSearched(Pageable page, String query, User user) {
 		if (!query.isBlank()) {
 			query = "%" + query.toLowerCase() + "%";
-			List<BoardDto> boards = boardRepository.findAllSearched(query).stream().map(BoardDto::create).collect(Collectors.toList());
+			List<BoardDto> boards = boardRepository.findAllSearched(query, user.getUserId()).stream().map(BoardDto::create).collect(Collectors.toList());
 			if (boards.size() != 0) {
 				return new PageImpl<>(boards, page, boards.size());
 			} else {

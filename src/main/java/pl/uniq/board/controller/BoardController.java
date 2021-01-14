@@ -60,7 +60,7 @@ public class BoardController {
 	@GetMapping(value = "/search")
 	public Page<BoardDto> getAllByKey(Pageable page, @RequestParam String q) {
 		try {
-			return boardService.getAllSearched(page, q);
+			return boardService.getAllSearched(page, q, authorizationService.getCurrentUser());
 		} catch (ResourceNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}

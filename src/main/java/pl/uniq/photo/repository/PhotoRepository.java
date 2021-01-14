@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, UUID> {
 
-	List<Photo> findAllByBoard(Board board);
+	List<Photo> findAllByBoardOrderByOrderAsc(Board board);
 
 	Integer countPhotoByBoard(Board board);
 
