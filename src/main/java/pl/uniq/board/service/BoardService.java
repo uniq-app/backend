@@ -15,6 +15,7 @@ import pl.uniq.follow.model.UserBoardFollow;
 import pl.uniq.notifications.service.NotificationService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -141,7 +142,8 @@ public class BoardService {
 			}
 
 			List<User> followers = board.getFollowers().stream().map(UserBoardFollow::getFrom).collect(Collectors.toList());
-			notificationService.sendBatchNotification(followers, title, body);
+			List<String> tokens = followers.stream().map(User::getFCMToken).filter(Objects::nonNull).collect(Collectors.toList());
+			notificationService.sendBatchNotification(tokens, title, body);
 		}
 	}
 }

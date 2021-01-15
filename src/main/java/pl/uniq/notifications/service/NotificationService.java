@@ -26,8 +26,7 @@ public class NotificationService {
 	public NotificationService(UserRepository userRepository) {this.userRepository = userRepository;}
 
 	@Async
-	public void sendNotification(User user, String title, String body) {
-		String token = user.getFCMToken();
+	public void sendNotification(String token, String title, String body) {
 		if (token == null) {
 			return;
 		}
@@ -47,9 +46,7 @@ public class NotificationService {
 	}
 
 	@Async
-	public void sendBatchNotification(List<User> users, String title, String body) {
-		List<String> tokens = users.stream().map(User::getFCMToken).filter(Objects::nonNull).collect(Collectors.toList());
-
+	public void sendBatchNotification(List<String> tokens, String title, String body) {
 		if (tokens.size() == 0 ) {
 			return;
 		}
