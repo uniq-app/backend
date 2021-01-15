@@ -10,6 +10,7 @@ import pl.uniq.board.repository.BoardRepository;
 import pl.uniq.exceptions.AuthorizationException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.follow.model.UserBoardFollow;
+import pl.uniq.notifications.service.NotificationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class BoardServiceTest {
 				name("board2").
 				user(user).build())).when(boardRepository).findAllByUserOrderByTimestampAsc(user);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		List<BoardDto> result = boardService.getAllBoards(Pageable.unpaged(), user).
 				get().
 				collect(Collectors.toUnmodifiableList());
@@ -85,7 +86,7 @@ public class BoardServiceTest {
 		user.setFollowing(follows);
 		doReturn(boards).when(boardRepository).findPublicBoardsByFollower(userId);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		List<BoardDto> result = boardService.getAllFollowed(Pageable.unpaged(), user).
 				get().
 				collect(Collectors.toUnmodifiableList());
@@ -122,10 +123,10 @@ public class BoardServiceTest {
 				description("Board with a lot of dogs photos.").
 				user(user).build();
 		List<Board> boards = List.of(board1, board2, board3);
-		doReturn(boards).when(boardRepository).findAllSearched("%board%");
+		doReturn(boards).when(boardRepository).findAllSearched("%board%", userId);
 
-		BoardService boardService = new BoardService(boardRepository);
-		List<BoardDto> result = boardService.getAllSearched(Pageable.unpaged(), "board").
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
+		List<BoardDto> result = boardService.getAllSearched(Pageable.unpaged(), "board", user).
 				get().
 				collect(Collectors.toUnmodifiableList());
 		assertEquals(3, result.size());
@@ -156,7 +157,7 @@ public class BoardServiceTest {
 				user(boardOwner).build();
 		doReturn(Optional.of(board)).when(boardRepository).findBoardByBoardId(boardId);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		BoardDto result1 = boardService.getBoardById(boardId, boardOwner);
 		assertEquals(result1.getCreatorName(), boardOwner.getUsername());
 		assertEquals(board.getUser().getUserId(), boardOwner.getUserId());
@@ -181,7 +182,7 @@ public class BoardServiceTest {
 				user(user).build();
 		when(boardRepository.save(any(Board.class))).thenAnswer(i -> i.getArguments()[0]);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		boardService.saveBoard(board, user);
 		verify(boardRepository, times(1)).save(any(Board.class));
 	}
@@ -204,7 +205,7 @@ public class BoardServiceTest {
 				user(user).build();
 		doReturn(Optional.of(board)).when(boardRepository).findBoardByBoardIdAndUser(boardId, user);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		boardService.deleteBoard(boardId, user);
 		verify(boardRepository, times(1)).delete(board);
 		assertThrows(ResourceNotFoundException.class, () -> boardService.getBoardById(boardId, user), "Board with given id does not exist");
@@ -228,7 +229,7 @@ public class BoardServiceTest {
 				user(user).build();
 		doReturn(Optional.of(board1)).when(boardRepository).findBoardByBoardIdAndIsPrivate(boardId, false);
 
-		BoardService boardService = new BoardService(boardRepository);
+		BoardService boardService = new BoardService(boardRepository, mock(NotificationService.class));
 		Board result1 = boardService.findBoardByBoardIdAndIsPrivate(boardId);
 		assertEquals(result1, board1);
 	}
