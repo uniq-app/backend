@@ -11,7 +11,7 @@ public class JwtTokenService {
 	private final JwtTokenRepository jwtTokenRepository;
 
 	@Autowired
-	public JwtTokenService(JwtTokenRepository jwtTokenRepository, JwtUtil jwtUtil) {
+	public JwtTokenService(JwtTokenRepository jwtTokenRepository) {
 		this.jwtTokenRepository = jwtTokenRepository;
 	}
 
