@@ -2,40 +2,71 @@ package pl.uniq.photo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.uniq.board.models.Board;
+import pl.uniq.board.service.BoardService;
 import pl.uniq.exceptions.ResourceNotFoundException;
+import pl.uniq.photo.dto.PhotoDto;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.repository.PhotoRepository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PhotoService {
 
 	private final PhotoRepository photoRepository;
+	private final BoardService boardService;
 
 	@Autowired
-	public PhotoService(PhotoRepository photoRepository) { this.photoRepository = photoRepository; }
-
-
-	public List<Photo> findAllByBoard(UUID uuid) throws ResourceNotFoundException {
-		return photoRepository.findAllByBoard(uuid);
+	public PhotoService(PhotoRepository photoRepository, BoardService boardService) {
+		this.photoRepository = photoRepository;
+		this.boardService = boardService;
 	}
 
 
-	public List<Photo> save(List<Photo> photos, UUID board_id) {
-		for (Photo photo : photos) {
-			photo.setBoard(board_id);
+	public List<PhotoDto> findAllByBoard(UUID boardId) throws ResourceNotFoundException {
+		return photoRepository.findAllByBoardOrderByOrderAsc(boardService.findBoardByBoardId(boardId))
+				.stream()
+				.map(PhotoDto::new)
+				.collect(Collectors.toList());
+	}
+
+	public List<PhotoDto> save(List<PhotoDto> photoDtos, UUID boardId) {
+		int newPhotos = 0;
+		List<PhotoDto> photos = new LinkedList<>();
+		for (PhotoDto photoDto : photoDtos) {
+			Optional<Photo> photoOptional = photoRepository.findPhotoByPhotoId(photoDto.getPhotoId());
+			Photo photo;
+			if (photoOptional.isPresent()) {
+				photo = photoOptional.get();
+				if (photoDto.getOrder() != null) {
+					photo.setOrder(photoDto.getOrder());
+				}
+				if (photoDto.getExtraData() != null) {
+					photo.setExtraData(photoDto.getExtraData());
+				}
+			} else {
+				Board board = boardService.findBoardByBoardId(boardId);
+				photoDto.setBoardId(board.getBoardId());
+				int order = photoRepository.countPhotoByBoard(board);
+				photo = Photo.create(photoDto, board);
+				photo.setOrder(order + 1);
+				newPhotos++;
+			}
 			photoRepository.save(photo);
+			photos.add(new PhotoDto(photo));
+		}
+		if (newPhotos > 0) {
+			boardService.notifyFollowersAboutNewPhotos(boardId, newPhotos);
 		}
 		return photos;
 	}
 
-	public void delete(List<Photo> photos, UUID uuid) {
-		for (Photo photo : photos) {
-			Optional<Photo> temp_photo = Optional.ofNullable(photoRepository.findByValueAndBoard(photo.getValue(), uuid));
-			temp_photo.ifPresent(photoRepository::delete);
+	public void delete(List<PhotoDto> photoDtos) {
+		for (PhotoDto photoDto : photoDtos) {
+			Optional<Photo> photoOptional = photoRepository.findPhotoByPhotoId(photoDto.getPhotoId());
+			photoOptional.ifPresent(photoRepository::delete);
 		}
 	}
 }

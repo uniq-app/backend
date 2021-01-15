@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.uniq.auth.user.User;
 import pl.uniq.follow.model.UserBoardFollow;
+import pl.uniq.photo.models.Photo;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -52,7 +53,10 @@ public class Board {
 	@Type(type = "org.hibernate.type.TextType")
 	private String extraData;
 
-	@OneToMany(mappedBy = "to")
+	@OneToMany(mappedBy = "to", cascade = CascadeType.REMOVE)
 	private List<UserBoardFollow> followers;
+
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+	private List<Photo> photos;
 
 }

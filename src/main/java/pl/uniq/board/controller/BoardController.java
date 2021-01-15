@@ -16,6 +16,7 @@ import pl.uniq.exceptions.FollowAlreadyExistsException;
 import pl.uniq.exceptions.FollowNotFoundException;
 import pl.uniq.exceptions.ResourceNotFoundException;
 import pl.uniq.follow.service.UserBoardFollowService;
+import pl.uniq.photo.dto.PhotoDto;
 import pl.uniq.photo.models.Photo;
 import pl.uniq.photo.service.PhotoService;
 import pl.uniq.utils.Message;
@@ -46,6 +47,11 @@ public class BoardController {
 		return boardService.getAllBoards(page, authorizationService.getCurrentUser());
 	}
 
+	@PostMapping
+	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
+		return new ResponseEntity<>(boardService.saveBoard(board, authorizationService.getCurrentUser()), HttpStatus.OK);
+	}
+
 	@GetMapping(value = "/followed")
 	public Page<BoardDto> getAllFollowed(Pageable page) {
 		return boardService.getAllFollowed(page, authorizationService.getCurrentUser());
@@ -54,7 +60,7 @@ public class BoardController {
 	@GetMapping(value = "/search")
 	public Page<BoardDto> getAllByKey(Pageable page, @RequestParam String q) {
 		try {
-			return boardService.getAllSearched(page, q);
+			return boardService.getAllSearched(page, q, authorizationService.getCurrentUser());
 		} catch (ResourceNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
@@ -69,11 +75,6 @@ public class BoardController {
 		} catch (AuthorizationException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
-	}
-
-	@PostMapping(value = "/")
-	public ResponseEntity<BoardDto> saveBoard(@RequestBody Board board) {
-		return new ResponseEntity<>(boardService.saveBoard(board, authorizationService.getCurrentUser()), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}")
@@ -96,18 +97,18 @@ public class BoardController {
 	}
 
 	@GetMapping(value = "/{uuid}/photos")
-	public ResponseEntity<List<Photo>> getPhotosByBoard(@PathVariable(value = "uuid") UUID uuid) {
+	public ResponseEntity<List<PhotoDto>> getPhotosByBoard(@PathVariable(value = "uuid") UUID uuid) {
 		return new ResponseEntity<>(photoService.findAllByBoard(uuid), HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/{uuid}/photos")
-	public ResponseEntity<List<Photo>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
+	public ResponseEntity<List<PhotoDto>> savePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
 		return new ResponseEntity<>(photoService.save(photos, uuid), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{uuid}/photos")
-	public ResponseEntity<Message> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<Photo> photos) {
-		photoService.delete(photos, uuid);
+	public ResponseEntity<Message> deletePhotosByBoard(@PathVariable(value = "uuid") UUID uuid, @RequestBody List<PhotoDto> photos) {
+		photoService.delete(photos);
 		return new ResponseEntity<>(new Message("Removed"), HttpStatus.OK);
 	}
 

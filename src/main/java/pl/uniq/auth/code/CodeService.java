@@ -60,4 +60,8 @@ public class CodeService {
 	public void deleteCode(Code code) {
 		codeRepository.delete(code);
 	}
+
+	public void clear(UUID userId) {
+		codeRepository.deleteAllByUserId(userId);
+	}
 }

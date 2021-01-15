@@ -1,4 +1,4 @@
-package pl.uniq.auth.user.dto;
+package pl.uniq.profile.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,18 +13,21 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class FullProfileDto {
+
 	private String username;
 	private String email;
 	private String bio;
 	private String avatar;
 	private Set<Role> roles;
+	private boolean isNotificationsEnabled;
 
-	public UserDto(User user) {
+	public FullProfileDto(User user) {
 		this.username = user.getUsername();
 		this.email = user.getEmail();
 		this.bio = user.getBio();
 		this.avatar = user.getAvatar();
 		this.roles = user.getRoles();
+		this.isNotificationsEnabled = user.getFCMToken() != null;
 	}
 }
