@@ -36,7 +36,7 @@ public class UserBoardFollowService {
 		});
 		UserBoardFollow userBoardFollow = UserBoardFollow.builder().from(currentUser).to(storedBoard).build();
 		userBoardFollowRepository.save(userBoardFollow);
-		notificationService.sendNotification(storedBoard.getUser(), "Board has been followed", "Your board has been followed by " + currentUser.getUsername());
+		notificationService.sendNotification(storedBoard.getUser().getFCMToken(), "Board has been followed", "Your board has been followed by " + currentUser.getUsername());
 	}
 
 	public void unfollow(UUID uuid, User currentUser) throws ResourceNotFoundException, FollowNotFoundException {
