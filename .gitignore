@@ -6,6 +6,7 @@ target/
 
 ### ENV ###
 .env
+env.properties
 
 ### STS ###
 .apt_generated
@@ -33,4 +34,6 @@ build/
 
 ### VS Code ###
 .vscode/
-/firebase.json
+
+firebase.json
+tomcat/
