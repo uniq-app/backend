@@ -12,4 +12,4 @@ Variable | Note
 `POSTGRES_USER` | username of database user ex. `admin`
 `POSTGRES_PASSWORD` | password of database user ex. `admin`
 `EMAIL_ACCOUNT` | uniq.app.auth@gmail.com
-`EMAIL_PASSWORD` | bezhasla1
+`EMAIL_PASSWORD` | password for email
