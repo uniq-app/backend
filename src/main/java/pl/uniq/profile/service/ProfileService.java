@@ -2,8 +2,8 @@ package pl.uniq.profile.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserRepository;
+import pl.uniq.user.User;
+import pl.uniq.user.UserRepository;
 import pl.uniq.profile.dto.ProfileDto;
 
 @Service

@@ -6,14 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pl.uniq.auth.user.User;
-import pl.uniq.auth.user.UserRepository;
+import pl.uniq.user.User;
+import pl.uniq.user.UserRepository;
 import pl.uniq.notifications.dto.NotificationDto;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {

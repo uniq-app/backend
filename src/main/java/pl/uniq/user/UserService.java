@@ -1,4 +1,4 @@
-package pl.uniq.auth.user;
+package pl.uniq.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,13 +8,13 @@ import pl.uniq.auth.code.Code;
 import pl.uniq.auth.code.CodeDto;
 import pl.uniq.auth.code.CodeService;
 import pl.uniq.auth.dto.AuthenticationResponse;
-import pl.uniq.auth.security.email.EmailManager;
+import pl.uniq.email.EmailManager;
 import pl.uniq.auth.security.jwt.JwtTokenService;
 import pl.uniq.auth.security.jwt.JwtUtil;
 import pl.uniq.auth.security.userdetails.CustomUserDetailsService;
-import pl.uniq.auth.user.dto.ChangePasswordDto;
-import pl.uniq.auth.user.dto.EmailDto;
-import pl.uniq.auth.user.dto.ResetPasswordDto;
+import pl.uniq.user.dto.ChangePasswordDto;
+import pl.uniq.user.dto.EmailDto;
+import pl.uniq.user.dto.ResetPasswordDto;
 import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
 import pl.uniq.utils.Message;

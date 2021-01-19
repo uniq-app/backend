@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 import pl.uniq.follow.model.UserBoardFollow;
 import pl.uniq.photo.models.Photo;
 

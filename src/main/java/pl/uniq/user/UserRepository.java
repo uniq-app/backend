@@ -1,4 +1,4 @@
-package pl.uniq.auth.user;
+package pl.uniq.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

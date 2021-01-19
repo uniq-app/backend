@@ -2,7 +2,7 @@ package pl.uniq.auth.code;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 import pl.uniq.exceptions.CodeException;
 
 import java.security.SecureRandom;

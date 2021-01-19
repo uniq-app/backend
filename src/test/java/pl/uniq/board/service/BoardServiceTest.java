@@ -2,8 +2,8 @@ package pl.uniq.board.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
-import pl.uniq.auth.user.Role;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.Role;
+import pl.uniq.user.User;
 import pl.uniq.board.dto.BoardDto;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.repository.BoardRepository;

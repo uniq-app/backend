@@ -2,7 +2,7 @@ package pl.uniq.follow.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 import pl.uniq.board.models.Board;
 import pl.uniq.board.service.BoardService;
 import pl.uniq.exceptions.FollowAlreadyExistsException;

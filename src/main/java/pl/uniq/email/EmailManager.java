@@ -1,4 +1,4 @@
-package pl.uniq.auth.security.email;
+package pl.uniq.email;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

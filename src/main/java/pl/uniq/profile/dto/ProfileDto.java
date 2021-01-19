@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 
 
 @Data

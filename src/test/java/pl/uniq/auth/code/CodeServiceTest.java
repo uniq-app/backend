@@ -1,7 +1,7 @@
 package pl.uniq.auth.code;
 
 import org.junit.jupiter.api.Test;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 
 import java.sql.Date;
 import java.time.Instant;

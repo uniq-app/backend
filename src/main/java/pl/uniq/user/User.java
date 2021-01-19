@@ -1,4 +1,4 @@
-package pl.uniq.auth.user;
+package pl.uniq.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

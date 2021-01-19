@@ -5,7 +5,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package pl.uniq.auth.user.dto;
+package pl.uniq.user.dto;
 
 import lombok.Builder;
 import lombok.Data;

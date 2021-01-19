@@ -3,7 +3,7 @@ package pl.uniq.board.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 import pl.uniq.board.models.Board;
 
 import java.util.List;

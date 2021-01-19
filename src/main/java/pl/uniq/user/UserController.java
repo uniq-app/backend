@@ -1,4 +1,4 @@
-package pl.uniq.auth.user;
+package pl.uniq.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,9 +8,9 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.uniq.auth.code.CodeDto;
 import pl.uniq.auth.dto.AuthenticationResponse;
 import pl.uniq.auth.security.authorizartion.AuthorizationService;
-import pl.uniq.auth.user.dto.ChangePasswordDto;
-import pl.uniq.auth.user.dto.EmailDto;
-import pl.uniq.auth.user.dto.ResetPasswordDto;
+import pl.uniq.user.dto.ChangePasswordDto;
+import pl.uniq.user.dto.EmailDto;
+import pl.uniq.user.dto.ResetPasswordDto;
 import pl.uniq.exceptions.CodeException;
 import pl.uniq.exceptions.UserOperationException;
 import pl.uniq.utils.Message;

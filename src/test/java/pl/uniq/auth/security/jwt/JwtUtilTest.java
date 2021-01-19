@@ -3,7 +3,7 @@ package pl.uniq.auth.security.jwt;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.uniq.auth.security.userdetails.CustomUserDetails;
-import pl.uniq.auth.user.User;
+import pl.uniq.user.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,4 +1,4 @@
-package pl.uniq.auth.user;
+package pl.uniq.user;
 
 public enum Role {
 	UNIQ_USER
