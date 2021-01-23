@@ -10,8 +10,8 @@ services:
     ports:
     - "5432:5432"
 
-  backend:
-    container_name: backend_service
+  api:
+    container_name: backend_api
     build:
       context: .
       dockerfile: ./docker/backend/Dockerfile
