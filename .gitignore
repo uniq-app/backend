@@ -37,3 +37,7 @@ build/
 
 firebase.json
 tomcat/
+.mvn/
+.config
+mvnw
+mvnw.cmd
