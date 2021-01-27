@@ -76,14 +76,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/v2/api-docs",
-				"/v3/api-docs",
-				"/configuration/**",
-				"/swagger-resources/**",
-				"/swagger-ui/**",
-				"/swagger-ui/",
-				"/swagger-ui.html",
-				"/webjars/**",
-				"/api-docs/**");
+		boolean isSwaggerEnabled = Boolean.getBoolean(System.getenv().get("SWAGGER_ENABLED"));
+		if (isSwaggerEnabled)
+		{
+			web.ignoring().antMatchers("/v2/api-docs",
+					"/v3/api-docs",
+					"/configuration/**",
+					"/swagger-resources/**",
+					"/swagger-ui/**",
+					"/swagger-ui/",
+					"/swagger-ui.html",
+					"/webjars/**",
+					"/api-docs/**");
+		}
 	}
 }
