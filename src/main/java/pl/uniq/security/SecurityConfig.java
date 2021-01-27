@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		boolean isSwaggerEnabled = Boolean.getBoolean(System.getenv().get("SWAGGER_ENABLED"));
+		boolean isSwaggerEnabled = Boolean.parseBoolean(System.getenv().getOrDefault("SWAGGER_ENABLED", "false"));
 		if (isSwaggerEnabled)
 		{
 			web.ignoring().antMatchers("/v2/api-docs",
