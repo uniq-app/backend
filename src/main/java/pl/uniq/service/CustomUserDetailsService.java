@@ -1,6 +1,7 @@
 package pl.uniq.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	public CustomUserDetails loadUserByEmail(String email) {
 		Optional<User> userOptional = userRepository.findUserByEmail(email);
-		return new CustomUserDetails(userOptional.get());
+		if (userOptional.isPresent())
+		{
+			return new CustomUserDetails(userOptional.get());
+		}
+		throw new BadCredentialsException("User does not exist");
 	}
 }

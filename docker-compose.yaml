@@ -32,6 +32,7 @@ services:
       LETSENCRYPT_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       SWAGGER_ENABLED: ${SWAGGER_ENABLED}
+      SECRET: ${SECRET}
     ports:
     - 8080:8080
     depends_on:

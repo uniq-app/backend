@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 	private final static String TOKEN_PREFIX = "Bearer ";
-	private final static String SECRET = "jlvF4FR4lfWW5LF8BBmFcEWGtggbAqdpsCa9co8cQpp5wzzKmJwQIGjH5XwaxP2CGSBxlbnqpTUhI7U49Tjs5zOTkW1Pk7WHC";
+	private final static String SECRET = System.getenv("SECRET");
 	private final static Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 	private static final Long timeExpirationSeconds = 604800L;
 
